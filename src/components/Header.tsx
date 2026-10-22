@@ -1,0 +1,78 @@
+import { Radar, LayoutDashboard, Plus, BarChart3 } from 'lucide-react';
+
+type View = 'dashboard' | 'add' | 'insights';
+
+interface HeaderProps {
+  view: View;
+  onNavigate: (view: View) => void;
+}
+
+export function Header({ view, onNavigate }: HeaderProps) {
+  return (
+    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <button
+            onClick={() => onNavigate('dashboard')}
+            className="flex items-center gap-2.5 group"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+              <Radar className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <h1 className="text-base font-bold text-slate-900 leading-none">Chariow Radar</h1>
+              <p className="text-xs text-slate-500 leading-none mt-0.5">Repérage & analyse</p>
+            </div>
+          </button>
+
+          <nav className="flex items-center gap-1">
+            <NavButton
+              active={view === 'dashboard'}
+              onClick={() => onNavigate('dashboard')}
+              icon={<LayoutDashboard className="w-4 h-4" />}
+              label="Classement"
+            />
+            <NavButton
+              active={view === 'insights'}
+              onClick={() => onNavigate('insights')}
+              icon={<BarChart3 className="w-4 h-4" />}
+              label="Analyses"
+            />
+            <NavButton
+              active={view === 'add'}
+              onClick={() => onNavigate('add')}
+              icon={<Plus className="w-4 h-4" />}
+              label="Repérer"
+            />
+          </nav>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function NavButton({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+        active
+          ? 'bg-slate-900 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+      }`}
+    >
+      {icon}
+      <span className="hidden sm:inline">{label}</span>
+    </button>
+  );
+}
