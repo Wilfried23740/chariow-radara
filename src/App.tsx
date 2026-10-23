@@ -4,11 +4,14 @@ import { Dashboard } from '@/components/Dashboard';
 import { ProductDetail } from '@/components/ProductDetail';
 import { AddProductForm } from '@/components/AddProductForm';
 import { Insights } from '@/components/Insights';
+import { AuthForm } from '@/components/AuthForm';
+import { useAuth } from '@/lib/auth';
 import type { Product } from '@/types';
 
-type View = 'dashboard' | 'add' | 'insights' | 'detail';
+type View = 'dashboard' | 'add' | 'insights' | 'detail' | 'login';
 
 function App() {
+  const { user, loading: authLoading } = useAuth();
   const [view, setView] = useState<View>('dashboard');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -39,11 +42,11 @@ function App() {
   }, []);
 
   const headerView: 'dashboard' | 'add' | 'insights' =
-    view === 'detail' ? 'dashboard' : (view as 'dashboard' | 'add' | 'insights');
+    view === 'detail' || view === 'login' ? 'dashboard' : view;
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <Header view={headerView} onNavigate={handleNavigate} />
+      <Header view={headerView} onNavigate={handleNavigate} onLogin={() => setView('login')} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {view === 'dashboard' && (
           <Dashboard
@@ -59,8 +62,19 @@ function App() {
             onDelete={handleDeleted}
           />
         )}
-        {view === 'add' && (
-          <AddProductForm onSaved={handleSaved} onCancel={() => setView('dashboard')} />
+        {view === 'add' &&
+          !authLoading &&
+          (user ? (
+            <AddProductForm onSaved={handleSaved} onCancel={() => setView('dashboard')} />
+          ) : (
+            <AuthForm
+              message="Connectez-vous pour repérer un produit."
+              onDone={() => undefined}
+              onCancel={() => setView('dashboard')}
+            />
+          ))}
+        {view === 'login' && (
+          <AuthForm onDone={() => setView('dashboard')} onCancel={() => setView('dashboard')} />
         )}
         {view === 'insights' && <Insights />}
       </main>

@@ -128,7 +128,7 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        {categories.slice(1).map((c) => (
+        {(categories.slice(1) as ProductCategory[]).map((c) => (
           <button
             key={c}
             onClick={() => setCategoryFilter(categoryFilter === c ? 'all' : c)}

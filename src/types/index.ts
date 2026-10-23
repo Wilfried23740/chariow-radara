@@ -21,6 +21,7 @@ export type MethodCategory =
 
 export interface Product {
   id: string;
+  user_id: string | null;
   title: string;
   creator: string;
   description: string;

@@ -26,6 +26,7 @@ import {
   METHOD_CATEGORY_COLORS,
 } from '@/types';
 import { getMethodIcon } from '@/lib/methodIcons';
+import { useAuth } from '@/lib/auth';
 
 interface ProductDetailProps {
   product: Product;
@@ -34,6 +35,8 @@ interface ProductDetailProps {
 }
 
 export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps) {
+  const { user } = useAuth();
+  const isOwner = !!user && product.user_id === user.id;
   const [methods, setMethods] = useState<ProductMethod[]>([]);
   const [allMethods, setAllMethods] = useState<SalesMethod[]>([]);
   const [loading, setLoading] = useState(true);
@@ -277,20 +280,22 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                     <h2 className="text-xl font-bold text-slate-900">{product.title}</h2>
                     <p className="text-sm text-slate-500 mt-0.5">par {product.creator}</p>
                   </div>
-                  <div className="flex gap-1.5">
-                    <button
-                      onClick={() => setEditing(true)}
-                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 text-xs font-medium hover:bg-slate-50"
-                    >
-                      Modifier
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      className="p-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                  {isOwner && (
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => setEditing(true)}
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 text-xs font-medium hover:bg-slate-50"
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        className="p-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 mt-2.5 flex-wrap">
@@ -362,7 +367,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
             <h3 className="font-semibold text-slate-900 text-sm">
               Méthodes de vente ({methods.length})
             </h3>
-            {!showAddMethod && availableMethods.length > 0 && (
+            {isOwner && !showAddMethod && availableMethods.length > 0 && (
               <button
                 onClick={() => setShowAddMethod(true)}
                 className="flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900"
@@ -477,12 +482,14 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                           </span>
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleRemoveMethod(pm.id)}
-                        className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {isOwner && (
+                        <button
+                          onClick={() => handleRemoveMethod(pm.id)}
+                          className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   );
                 })}
