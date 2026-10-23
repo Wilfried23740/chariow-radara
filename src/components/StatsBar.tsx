@@ -1,12 +1,12 @@
 import { Package, TrendingUp, DollarSign, Target } from 'lucide-react';
-import type { Product, SalesMethod } from '@/types';
+import type { Product } from '@/types';
 
 interface StatsBarProps {
   products: Product[];
-  methods: SalesMethod[];
+  trackedMethods: number;
 }
 
-export function StatsBar({ products, methods }: StatsBarProps) {
+export function StatsBar({ products, trackedMethods }: StatsBarProps) {
   const totalProducts = products.length;
   const avgTraffic =
     totalProducts > 0
@@ -16,13 +16,12 @@ export function StatsBar({ products, methods }: StatsBarProps) {
     totalProducts > 0
       ? Math.round(products.reduce((sum, p) => sum + p.price, 0) / totalProducts)
       : 0;
-  const topMethods = methods.length;
 
   const stats = [
     { label: 'Produits repérés', value: totalProducts, icon: Package, color: 'text-slate-700', bg: 'bg-slate-50' },
     { label: 'Trafic moyen', value: `${avgTraffic}/100`, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Prix moyen', value: avgPrice > 0 ? `${avgPrice} $` : '—', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Méthodes suivies', value: topMethods, icon: Target, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Méthodes suivies', value: trackedMethods, icon: Target, color: 'text-violet-600', bg: 'bg-violet-50' },
   ];
 
   return (

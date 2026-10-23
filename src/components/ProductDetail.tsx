@@ -40,6 +40,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
   const [methods, setMethods] = useState<ProductMethod[]>([]);
   const [allMethods, setAllMethods] = useState<SalesMethod[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [showAddMethod, setShowAddMethod] = useState(false);
   const [selectedMethodId, setSelectedMethodId] = useState('');
   const [contribution, setContribution] = useState(50);
@@ -58,11 +59,16 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   const loadDetail = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error: pmError } = await supabase
       .from('product_methods')
       .select('*, method:sales_methods(*)')
       .eq('product_id', product.id);
-    const { data: methodsData } = await supabase.from('sales_methods').select('*').order('name');
+    const { data: methodsData, error: methodsError } = await supabase
+      .from('sales_methods')
+      .select('*')
+      .order('name');
+    const loadError = pmError ?? methodsError;
+    if (loadError) setError('Impossible de charger les méthodes de vente : ' + loadError.message);
     setMethods((data as ProductMethod[]) ?? []);
     setAllMethods(methodsData ?? []);
     setLoading(false);
@@ -78,7 +84,8 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   async function handleAddMethod() {
     if (!selectedMethodId) return;
-    const { data, error } = await supabase
+    setError('');
+    const { data, error: insertError } = await supabase
       .from('product_methods')
       .insert({
         product_id: product.id,
@@ -88,7 +95,11 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
       })
       .select('*, method:sales_methods(*)')
       .single();
-    if (!error && data) {
+    if (insertError) {
+      setError('Impossible d\'ajouter la méthode : ' + insertError.message);
+      return;
+    }
+    if (data) {
       setMethods((prev) => [...prev, data as ProductMethod]);
     }
     setSelectedMethodId('');
@@ -98,14 +109,18 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
   }
 
   async function handleRemoveMethod(id: string) {
-    const { error } = await supabase.from('product_methods').delete().eq('id', id);
-    if (!error) {
-      setMethods((prev) => prev.filter((m) => m.id !== id));
+    setError('');
+    const { error: deleteError } = await supabase.from('product_methods').delete().eq('id', id);
+    if (deleteError) {
+      setError('Impossible de retirer la méthode : ' + deleteError.message);
+      return;
     }
+    setMethods((prev) => prev.filter((m) => m.id !== id));
   }
 
   async function handleSaveEdit() {
-    const { error } = await supabase
+    setError('');
+    const { error: updateError } = await supabase
       .from('products')
       .update({
         title: editForm.title,
@@ -119,21 +134,28 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
         updated_at: new Date().toISOString(),
       })
       .eq('id', product.id);
-    if (!error) {
-      product.title = editForm.title;
-      product.creator = editForm.creator;
-      product.description = editForm.description;
-      product.category = editForm.category as ProductCategory;
-      product.price = editForm.price;
-      product.traffic_score = editForm.traffic_score;
-      product.sales_estimate = editForm.sales_estimate;
-      product.rating = editForm.rating;
-      setEditing(false);
+    if (updateError) {
+      setError('Impossible d\'enregistrer les modifications : ' + updateError.message);
+      return;
     }
+    product.title = editForm.title;
+    product.creator = editForm.creator;
+    product.description = editForm.description;
+    product.category = editForm.category as ProductCategory;
+    product.price = editForm.price;
+    product.traffic_score = editForm.traffic_score;
+    product.sales_estimate = editForm.sales_estimate;
+    product.rating = editForm.rating;
+    setEditing(false);
   }
 
   async function handleDelete() {
-    await supabase.from('products').delete().eq('id', product.id);
+    setError('');
+    const { error: deleteError } = await supabase.from('products').delete().eq('id', product.id);
+    if (deleteError) {
+      setError('Impossible de supprimer le produit : ' + deleteError.message);
+      return;
+    }
     onDelete();
   }
 
@@ -146,6 +168,12 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
         <ArrowLeft className="w-4 h-4" />
         Retour au classement
       </button>
+
+      {error && (
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          {error}
+        </div>
+      )}
 
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         <div className="flex flex-col sm:flex-row gap-5 p-5">

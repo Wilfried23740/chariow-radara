@@ -15,7 +15,9 @@ type SortBy = 'traffic' | 'sales' | 'rating' | 'recent';
 
 export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [trackedMethods, setTrackedMethods] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<ProductCategory | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortBy>('traffic');
@@ -23,14 +25,17 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('traffic_score', { ascending: false });
-      if (error) {
-        console.error('Erreur de chargement:', error);
+      setLoadError('');
+      const [productsRes, methodsRes] = await Promise.all([
+        supabase.from('products').select('*').order('traffic_score', { ascending: false }),
+        supabase.from('product_methods').select('method_id'),
+      ]);
+      if (productsRes.error) {
+        console.error('Erreur de chargement:', productsRes.error);
+        setLoadError('Impossible de charger les produits : ' + productsRes.error.message);
       }
-      setProducts(data ?? []);
+      setProducts(productsRes.data ?? []);
+      setTrackedMethods(new Set((methodsRes.data ?? []).map((pm) => pm.method_id)).size);
       setLoading(false);
     }
     load();
@@ -88,7 +93,13 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
         </p>
       </div>
 
-      <StatsBar products={products} methods={[]} />
+      {loadError && (
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          {loadError}
+        </div>
+      )}
+
+      <StatsBar products={products} trackedMethods={trackedMethods} />
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">

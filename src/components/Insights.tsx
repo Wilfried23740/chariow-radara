@@ -16,15 +16,21 @@ export function Insights() {
   const [productMethods, setProductMethods] = useState<ProductMethod[]>([]);
   const [methods, setMethods] = useState<SalesMethod[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
     async function load() {
-      const [{ data: pmData }, { data: methodsData }] = await Promise.all([
+      const [pmRes, methodsRes] = await Promise.all([
         supabase.from('product_methods').select('*, method:sales_methods(*)'),
         supabase.from('sales_methods').select('*').order('name'),
       ]);
-      setProductMethods((pmData as ProductMethod[]) ?? []);
-      setMethods(methodsData ?? []);
+      const err = pmRes.error ?? methodsRes.error;
+      if (err) {
+        console.error('Erreur de chargement:', err);
+        setLoadError('Impossible de charger les analyses : ' + err.message);
+      }
+      setProductMethods((pmRes.data as ProductMethod[]) ?? []);
+      setMethods(methodsRes.data ?? []);
       setLoading(false);
     }
     load();
@@ -89,6 +95,12 @@ export function Insights() {
           Découvrez quelles stratégies marketing génèrent le plus de trafic sur les produits repérés.
         </p>
       </div>
+
+      {loadError && (
+        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          {loadError}
+        </div>
+      )}
 
       {productMethods.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
