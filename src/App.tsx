@@ -45,7 +45,7 @@ function App() {
     view === 'detail' || view === 'login' ? 'dashboard' : view;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Header view={headerView} onNavigate={handleNavigate} onLogin={() => setView('login')} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {view === 'dashboard' && (

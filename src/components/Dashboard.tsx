@@ -88,14 +88,14 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900">Classement des produits</h2>
-        <p className="text-sm text-slate-500 mt-1">
+        <h2 className="font-display text-2xl text-foreground">Classement des produits</h2>
+        <p className="text-sm text-muted-foreground mt-1">
           Les meilleurs produits digitaux repérés sur Chariow, classés par trafic généré.
         </p>
       </div>
 
       {loadError && (
-        <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
           {loadError}
         </div>
       )}
@@ -104,21 +104,21 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Rechercher par titre, créateur ou tag…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400 shrink-0" />
+          <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as ProductCategory | 'all')}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="px-3 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           >
             {categories.map((c) => (
               <option key={c} value={c}>
@@ -129,7 +129,7 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortBy)}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="px-3 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="traffic">Trafic</option>
             <option value="sales">Ventes</option>
@@ -146,8 +146,8 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
             onClick={() => setCategoryFilter(categoryFilter === c ? 'all' : c)}
             className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${
               categoryFilter === c
-                ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card text-muted-foreground border-border hover:border-primary/40'
             }`}
           >
             {CATEGORY_LABELS[c]}
@@ -157,14 +157,14 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 text-slate-400 animate-spin" />
+          <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-3">
-            <Inbox className="w-7 h-7 text-slate-400" />
+          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-3">
+            <Inbox className="w-7 h-7 text-muted-foreground" />
           </div>
-          <p className="text-slate-500 font-medium">
+          <p className="text-muted-foreground font-medium">
             {products.length === 0
               ? 'Aucun produit repéré pour le moment.'
               : 'Aucun produit ne correspond à votre recherche.'}
@@ -172,7 +172,7 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
           {products.length === 0 && (
             <button
               onClick={onNavigateAdd}
-              className="mt-4 px-4 py-2 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
+              className="mt-4 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               Repérer mon premier produit
             </button>
@@ -181,12 +181,17 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
           {filtered.map((product, i) => (
-            <ProductCard
+            <div
               key={product.id}
-              product={product}
-              rank={i + 1}
-              onClick={() => onProductClick(product)}
-            />
+              className="motion-safe:animate-fade-up"
+              style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}
+            >
+              <ProductCard
+                product={product}
+                rank={i + 1}
+                onClick={() => onProductClick(product)}
+              />
+            </div>
           ))}
         </div>
       )}

@@ -64,26 +64,26 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
   }
 
   const inputClass =
-    'w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent';
-  const labelClass = 'block text-xs font-medium text-slate-500 mb-1.5';
+    'w-full text-sm border border-input rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
+  const labelClass = 'block text-xs font-medium text-muted-foreground mb-1.5';
 
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">Repérer un produit</h2>
-        <p className="text-sm text-slate-500 mt-1">
+        <h2 className="font-display text-2xl text-foreground">Repérer un produit</h2>
+        <p className="text-sm text-muted-foreground mt-1">
           Ajoutez un produit digital repéré sur Chariow pour suivre sa performance et ses méthodes de vente.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-5">
-        <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-            <Tag className="w-5 h-5 text-slate-500" />
+      <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-border p-6 space-y-5">
+        <div className="flex items-center gap-3 pb-4 border-b border-border/60">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-muted to-border flex items-center justify-center">
+            <Tag className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Informations du produit</h3>
-            <p className="text-xs text-slate-500">Renseignez les détails visibles sur Chariow</p>
+            <h3 className="font-semibold text-foreground">Informations du produit</h3>
+            <p className="text-xs text-muted-foreground">Renseignez les détails visibles sur Chariow</p>
           </div>
         </div>
 
@@ -181,8 +181,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-slate-100">
-          <h3 className="font-semibold text-slate-900 text-sm mb-4">Indicateurs de performance</h3>
+        <div className="pt-4 border-t border-border/60">
+          <h3 className="font-semibold text-foreground text-sm mb-4">Indicateurs de performance</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className={labelClass}>
@@ -194,7 +194,7 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
                 max="100"
                 value={form.traffic_score}
                 onChange={(e) => setForm({ ...form, traffic_score: parseInt(e.target.value) })}
-                className="w-full accent-slate-900"
+                className="w-full accent-primary"
               />
             </div>
             <div>
@@ -236,7 +236,7 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
         </div>
 
         {error && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
@@ -245,7 +245,7 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -257,7 +257,7 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-muted-foreground text-sm font-medium hover:bg-muted"
           >
             <X className="w-4 h-4" />
             Annuler

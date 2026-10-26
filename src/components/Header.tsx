@@ -13,19 +13,19 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
   const { user, loading, signOut } = useAuth();
 
   return (
-    <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-lg border-b border-slate-200">
+    <header className="sticky top-0 z-30 bg-card/80 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <button
             onClick={() => onNavigate('dashboard')}
             className="flex items-center gap-2.5 group"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-slate-900 to-slate-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-              <Radar className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow motion-reduce:transition-none">
+              <Radar className="w-5 h-5 text-primary-foreground" />
             </div>
             <div className="text-left">
-              <h1 className="text-base font-bold text-slate-900 leading-none">Chariow Radar</h1>
-              <p className="text-xs text-slate-500 leading-none mt-0.5">Repérage & analyse</p>
+              <h1 className="font-display text-lg text-foreground leading-none">Chariow Radar</h1>
+              <p className="text-xs text-muted-foreground leading-none mt-0.5">Repérage & analyse</p>
             </div>
           </button>
 
@@ -53,7 +53,7 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
                 <button
                   onClick={signOut}
                   title={user.email ?? undefined}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  className="flex items-center gap-1.5 min-h-11 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden sm:inline">Déconnexion</span>
@@ -61,7 +61,7 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
               ) : (
                 <button
                   onClick={onLogin}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  className="flex items-center gap-1.5 min-h-11 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
                   <LogIn className="w-4 h-4" />
                   <span className="hidden sm:inline">Connexion</span>
@@ -88,10 +88,10 @@ function NavButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+      className={`flex items-center gap-1.5 min-h-11 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
         active
-          ? 'bg-slate-900 text-white shadow-sm'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+          ? 'bg-primary text-primary-foreground shadow-sm'
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
       }`}
     >
       {icon}

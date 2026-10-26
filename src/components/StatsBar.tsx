@@ -18,10 +18,10 @@ export function StatsBar({ products, trackedMethods }: StatsBarProps) {
       : 0;
 
   const stats = [
-    { label: 'Produits repérés', value: totalProducts, icon: Package, color: 'text-slate-700', bg: 'bg-slate-50' },
-    { label: 'Trafic moyen', value: `${avgTraffic}/100`, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Prix moyen', value: avgPrice > 0 ? `${avgPrice} $` : '—', icon: DollarSign, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Méthodes suivies', value: trackedMethods, icon: Target, color: 'text-violet-600', bg: 'bg-violet-50' },
+    { label: 'Produits repérés', value: totalProducts, icon: Package, color: 'text-foreground', bg: 'bg-muted' },
+    { label: 'Trafic moyen', value: `${avgTraffic}/100`, icon: TrendingUp, color: 'text-accent', bg: 'bg-accent/10' },
+    { label: 'Prix moyen', value: avgPrice > 0 ? `${avgPrice} $` : '—', icon: DollarSign, color: 'text-primary dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/10' },
+    { label: 'Méthodes suivies', value: trackedMethods, icon: Target, color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-500/10' },
   ];
 
   return (
@@ -31,14 +31,14 @@ export function StatsBar({ products, trackedMethods }: StatsBarProps) {
         return (
           <div
             key={stat.label}
-            className="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3"
+            className="bg-card rounded-2xl border border-border p-4 flex items-center gap-3"
           >
             <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center shrink-0`}>
               <Icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div className="min-w-0">
-              <p className="text-xl font-bold text-slate-900 leading-tight">{stat.value}</p>
-              <p className="text-xs text-slate-500 truncate">{stat.label}</p>
+              <p className="text-xl font-bold text-foreground leading-tight">{stat.value}</p>
+              <p className="text-xs text-muted-foreground truncate">{stat.label}</p>
             </div>
           </div>
         );

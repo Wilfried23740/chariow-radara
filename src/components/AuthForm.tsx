@@ -59,23 +59,23 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
   }
 
   const inputClass =
-    'w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent';
+    'w-full text-sm border border-input rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
 
   return (
     <div className="max-w-md mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="font-display text-2xl text-foreground">
           {mode === 'login' ? 'Connexion' : 'Créer un compte'}
         </h2>
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           {message ?? 'Connectez-vous pour repérer et gérer vos produits.'}
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-border p-6 space-y-4">
         {mode === 'signup' && (
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1.5">Nom</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Nom</label>
             <input
               type="text"
               autoComplete="name"
@@ -86,7 +86,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           </div>
         )}
         <div>
-          <label className="block text-xs font-medium text-slate-500 mb-1.5">Email</label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Email</label>
           <input
             type="email"
             autoComplete="email"
@@ -96,7 +96,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-slate-500 mb-1.5">Mot de passe</label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Mot de passe</label>
           <input
             type="password"
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -107,7 +107,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
         </div>
 
         {error && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
@@ -116,7 +116,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -130,7 +130,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
+            className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground text-sm font-medium hover:bg-muted"
           >
             Annuler
           </button>
@@ -142,7 +142,7 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
             setMode(mode === 'login' ? 'signup' : 'login');
             setError('');
           }}
-          className="text-xs text-slate-500 hover:text-slate-900 underline"
+          className="text-xs text-muted-foreground hover:text-foreground underline"
         >
           {mode === 'login' ? 'Pas encore de compte ? Inscrivez-vous' : 'Déjà un compte ? Connectez-vous'}
         </button>
