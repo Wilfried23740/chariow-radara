@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LogIn, UserPlus, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { authClient } from '@/lib/auth-client';
 
 interface AuthFormProps {
   onDone: () => void;
@@ -10,49 +10,52 @@ interface AuthFormProps {
 
 export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    setInfo('');
-    if (!email.trim() || password.length < 6) {
-      setError('Renseignez un email et un mot de passe d\'au moins 6 caractères.');
+    if (!email.trim() || password.length < 8) {
+      setError('Renseignez un email et un mot de passe d\'au moins 8 caractères.');
+      return;
+    }
+    if (mode === 'signup' && !name.trim()) {
+      setError('Renseignez votre nom.');
       return;
     }
     setLoading(true);
     if (mode === 'login') {
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { error: authError } = await authClient.signIn.email({
         email: email.trim(),
         password,
       });
       setLoading(false);
       if (authError) {
-        setError('Connexion impossible : ' + authError.message);
+        setError(
+          authError.status === 401
+            ? 'Connexion impossible : email ou mot de passe incorrect.'
+            : 'Connexion impossible : ' + (authError.message ?? 'erreur inconnue'),
+        );
         return;
       }
       onDone();
       return;
     }
-    const { data, error: authError } = await supabase.auth.signUp({
+    const { error: authError } = await authClient.signUp.email({
+      name: name.trim(),
       email: email.trim(),
       password,
     });
     setLoading(false);
     if (authError) {
-      setError('Inscription impossible : ' + authError.message);
+      setError('Inscription impossible : ' + (authError.message ?? 'erreur inconnue'));
       return;
     }
-    if (data.session) {
-      onDone();
-    } else {
-      setInfo('Compte créé. Vérifiez votre boîte mail pour confirmer votre adresse, puis connectez-vous.');
-      setMode('login');
-    }
+    onDone();
   }
 
   const inputClass =
@@ -70,6 +73,18 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
+        {mode === 'signup' && (
+          <div>
+            <label className="block text-xs font-medium text-slate-500 mb-1.5">Nom</label>
+            <input
+              type="text"
+              autoComplete="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={inputClass}
+            />
+          </div>
+        )}
         <div>
           <label className="block text-xs font-medium text-slate-500 mb-1.5">Email</label>
           <input
@@ -94,11 +109,6 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
         {error && (
           <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
             {error}
-          </div>
-        )}
-        {info && (
-          <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
-            {info}
           </div>
         )}
 
@@ -131,7 +141,6 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           onClick={() => {
             setMode(mode === 'login' ? 'signup' : 'login');
             setError('');
-            setInfo('');
           }}
           className="text-xs text-slate-500 hover:text-slate-900 underline"
         >

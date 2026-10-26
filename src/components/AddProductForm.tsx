@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tag, Save, X, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { api, errorMessage } from '@/lib/api';
 import type { ProductCategory } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
 
@@ -39,25 +39,27 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
       .split(',')
       .map((t) => t.trim())
       .filter(Boolean);
-    const { error: insertError } = await supabase.from('products').insert({
-      title: form.title.trim(),
-      creator: form.creator.trim(),
-      description: form.description.trim(),
-      category: form.category,
-      price: form.price,
-      currency: form.currency,
-      image_url: form.image_url.trim(),
-      chariow_url: form.chariow_url.trim(),
-      traffic_score: form.traffic_score,
-      sales_estimate: form.sales_estimate,
-      rating: form.rating,
-      tags,
-    });
-    setSaving(false);
-    if (insertError) {
-      setError('Erreur lors de l\'enregistrement: ' + insertError.message);
+    try {
+      await api.post('/api/products', {
+        title: form.title.trim(),
+        creator: form.creator.trim(),
+        description: form.description.trim(),
+        category: form.category,
+        price: form.price,
+        currency: form.currency,
+        image_url: form.image_url.trim(),
+        chariow_url: form.chariow_url.trim(),
+        traffic_score: form.traffic_score,
+        sales_estimate: form.sales_estimate,
+        rating: form.rating,
+        tags,
+      });
+    } catch (err) {
+      setSaving(false);
+      setError('Erreur lors de l\'enregistrement : ' + errorMessage(err));
       return;
     }
+    setSaving(false);
     onSaved();
   }
 

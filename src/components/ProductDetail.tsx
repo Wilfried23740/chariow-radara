@@ -11,7 +11,7 @@ import {
   Save,
   X,
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { api, errorMessage } from '@/lib/api';
 import type {
   Product,
   SalesMethod,
@@ -59,18 +59,16 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   const loadDetail = useCallback(async () => {
     setLoading(true);
-    const { data, error: pmError } = await supabase
-      .from('product_methods')
-      .select('*, method:sales_methods(*)')
-      .eq('product_id', product.id);
-    const { data: methodsData, error: methodsError } = await supabase
-      .from('sales_methods')
-      .select('*')
-      .order('name');
-    const loadError = pmError ?? methodsError;
-    if (loadError) setError('Impossible de charger les méthodes de vente : ' + loadError.message);
-    setMethods((data as ProductMethod[]) ?? []);
-    setAllMethods(methodsData ?? []);
+    try {
+      const [linked, catalog] = await Promise.all([
+        api.get<ProductMethod[]>(`/api/products/${product.id}/methods`),
+        api.get<SalesMethod[]>('/api/methods'),
+      ]);
+      setMethods(linked);
+      setAllMethods(catalog);
+    } catch (err) {
+      setError('Impossible de charger les méthodes de vente : ' + errorMessage(err));
+    }
     setLoading(false);
   }, [product.id]);
 
@@ -85,22 +83,16 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
   async function handleAddMethod() {
     if (!selectedMethodId) return;
     setError('');
-    const { data, error: insertError } = await supabase
-      .from('product_methods')
-      .insert({
-        product_id: product.id,
+    try {
+      const created = await api.post<ProductMethod>(`/api/products/${product.id}/methods`, {
         method_id: selectedMethodId,
         traffic_contribution: contribution,
         notes,
-      })
-      .select('*, method:sales_methods(*)')
-      .single();
-    if (insertError) {
-      setError('Impossible d\'ajouter la méthode : ' + insertError.message);
+      });
+      setMethods((prev) => [...prev, created]);
+    } catch (err) {
+      setError('Impossible d\'ajouter la méthode : ' + errorMessage(err));
       return;
-    }
-    if (data) {
-      setMethods((prev) => [...prev, data as ProductMethod]);
     }
     setSelectedMethodId('');
     setContribution(50);
@@ -110,9 +102,10 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   async function handleRemoveMethod(id: string) {
     setError('');
-    const { error: deleteError } = await supabase.from('product_methods').delete().eq('id', id);
-    if (deleteError) {
-      setError('Impossible de retirer la méthode : ' + deleteError.message);
+    try {
+      await api.delete(`/api/product-methods/${id}`);
+    } catch (err) {
+      setError('Impossible de retirer la méthode : ' + errorMessage(err));
       return;
     }
     setMethods((prev) => prev.filter((m) => m.id !== id));
@@ -120,9 +113,8 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   async function handleSaveEdit() {
     setError('');
-    const { error: updateError } = await supabase
-      .from('products')
-      .update({
+    try {
+      await api.patch(`/api/products/${product.id}`, {
         title: editForm.title,
         creator: editForm.creator,
         description: editForm.description,
@@ -131,11 +123,9 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
         traffic_score: editForm.traffic_score,
         sales_estimate: editForm.sales_estimate,
         rating: editForm.rating,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', product.id);
-    if (updateError) {
-      setError('Impossible d\'enregistrer les modifications : ' + updateError.message);
+      });
+    } catch (err) {
+      setError('Impossible d\'enregistrer les modifications : ' + errorMessage(err));
       return;
     }
     product.title = editForm.title;
@@ -151,9 +141,10 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
 
   async function handleDelete() {
     setError('');
-    const { error: deleteError } = await supabase.from('products').delete().eq('id', product.id);
-    if (deleteError) {
-      setError('Impossible de supprimer le produit : ' + deleteError.message);
+    try {
+      await api.delete(`/api/products/${product.id}`);
+    } catch (err) {
+      setError('Impossible de supprimer le produit : ' + errorMessage(err));
       return;
     }
     onDelete();

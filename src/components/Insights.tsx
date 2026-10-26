@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Loader2, TrendingUp, Award, BarChart3 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { api, errorMessage } from '@/lib/api';
 import type { ProductMethod, SalesMethod, MethodCategory } from '@/types';
 import { METHOD_CATEGORY_LABELS, METHOD_CATEGORY_COLORS } from '@/types';
 import { getMethodIcon } from '@/lib/methodIcons';
@@ -20,17 +20,17 @@ export function Insights() {
 
   useEffect(() => {
     async function load() {
-      const [pmRes, methodsRes] = await Promise.all([
-        supabase.from('product_methods').select('*, method:sales_methods(*)'),
-        supabase.from('sales_methods').select('*').order('name'),
-      ]);
-      const err = pmRes.error ?? methodsRes.error;
-      if (err) {
+      try {
+        const [links, catalog] = await Promise.all([
+          api.get<ProductMethod[]>('/api/product-methods'),
+          api.get<SalesMethod[]>('/api/methods'),
+        ]);
+        setProductMethods(links);
+        setMethods(catalog);
+      } catch (err) {
         console.error('Erreur de chargement:', err);
-        setLoadError('Impossible de charger les analyses : ' + err.message);
+        setLoadError('Impossible de charger les analyses : ' + errorMessage(err));
       }
-      setProductMethods((pmRes.data as ProductMethod[]) ?? []);
-      setMethods(methodsRes.data ?? []);
       setLoading(false);
     }
     load();

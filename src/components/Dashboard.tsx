@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Search, Filter, Loader2, Inbox } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import type { Product, ProductCategory } from '@/types';
+import { api, errorMessage } from '@/lib/api';
+import type { Product, ProductCategory, ProductMethod } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
 import { ProductCard } from './ProductCard';
 import { StatsBar } from './StatsBar';
@@ -26,16 +26,17 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
     async function load() {
       setLoading(true);
       setLoadError('');
-      const [productsRes, methodsRes] = await Promise.all([
-        supabase.from('products').select('*').order('traffic_score', { ascending: false }),
-        supabase.from('product_methods').select('method_id'),
-      ]);
-      if (productsRes.error) {
-        console.error('Erreur de chargement:', productsRes.error);
-        setLoadError('Impossible de charger les produits : ' + productsRes.error.message);
+      try {
+        const [productList, links] = await Promise.all([
+          api.get<Product[]>('/api/products'),
+          api.get<ProductMethod[]>('/api/product-methods'),
+        ]);
+        setProducts(productList);
+        setTrackedMethods(new Set(links.map((pm) => pm.method_id)).size);
+      } catch (err) {
+        console.error('Erreur de chargement:', err);
+        setLoadError('Impossible de charger les produits : ' + errorMessage(err));
       }
-      setProducts(productsRes.data ?? []);
-      setTrackedMethods(new Set((methodsRes.data ?? []).map((pm) => pm.method_id)).size);
       setLoading(false);
     }
     load();
