@@ -28,7 +28,7 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
   return (
     <button
       onClick={onClick}
-      className="group h-full w-full text-left bg-card rounded-[1.375rem] border border-border overflow-hidden hover:border-brand/60 hover:shadow-[0_12px_40px_-16px_rgb(var(--brand)/0.5)] transition-all duration-200 motion-safe:hover:-translate-y-0.5"
+      className="group h-full w-full text-left bg-card rounded-[1.375rem] border border-border overflow-hidden hover:border-brand/60 hover:shadow-[0_12px_40px_-16px_rgb(var(--brand)/0.5)] transition-all duration-200 motion-safe:hover:[transform:perspective(900px)_rotateX(2.5deg)_rotateY(-3deg)_translateY(-3px)]"
     >
       <div className="flex gap-4 p-4">
         <div className="relative shrink-0">

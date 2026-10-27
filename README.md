@@ -71,9 +71,6 @@ npm run dev
 | `npm run db:migrate` | `server/` | Applique les migrations |
 | `npm run db:seed` | `server/` | Charge les méthodes de vente de départ |
 
-## Avant la mise en ligne
+## Mise en ligne
 
-- Activer la confirmation d'email (`requireEmailVerification` dans `server/src/auth.ts`) avec un service d'envoi d'emails.
-- Définir un `BETTER_AUTH_SECRET` propre à la production, et renseigner `BETTER_AUTH_URL`, `FRONTEND_URL` et, si l'API est sur un autre domaine, `VITE_API_URL`.
-- Ajouter une limitation du nombre de requêtes et une protection contre les faux comptes à l'inscription.
-- Utiliser une base PostgreSQL hébergée (par exemple Neon) et appliquer les migrations avec `npm run db:migrate`.
+Le guide pas à pas (Neon, Render, Vercel, Resend, Turnstile) est dans [DEPLOIEMENT.md](DEPLOIEMENT.md). Le code est prêt : limitation de requêtes, en-têtes de sécurité, confirmation d'email (Resend) et anti-robots (Turnstile) s'activent dès que leurs clés sont renseignées.

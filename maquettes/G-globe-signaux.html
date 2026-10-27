@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette G — Globe de signaux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080F;--panel:#0E1020;--line:#222645;--text:#EDEEFF;--muted:#9A9CC4;--ind:#7C6CFF;--em:#2EF2A6;--amber:#FFC24B}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 80% 25%,rgba(124,108,255,.25),transparent 70%),radial-gradient(40% 40% at 5% 90%,rgba(46,242,166,.1),transparent 70%)}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px}
+.logo i{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 14px var(--em)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:500;text-decoration:none;color:var(--text);border:1px solid var(--line);transition:.2s}
+.btn:hover{border-color:var(--ind)}
+.btn.pri{background:var(--em);color:#04150E;border-color:var(--em);font-weight:700;box-shadow:0 0 32px rgba(46,242,166,.35)}
+.btn.pri:hover{box-shadow:0 0 48px rgba(46,242,166,.55);transform:translateY(-1px)}
+.hero{display:grid;grid-template-columns:.95fr 1.05fr;gap:20px;align-items:center;padding:20px 0 70px;min-height:calc(100dvh - 80px)}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--em);border:1px solid rgba(46,242,166,.35);padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(42px,6vw,84px);line-height:.98;letter-spacing:-.035em;margin:22px 0}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--ind),var(--em));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);font-size:18px;max-width:500px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.globe{position:relative;width:100%;aspect-ratio:1;max-width:660px;margin:0 auto;cursor:grab;touch-action:pan-y}
+.globe:active{cursor:grabbing}
+.globe canvas{position:absolute;inset:0;width:100%;height:100%}
+.glow{position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(124,108,255,.28),rgba(46,242,166,.08) 55%,transparent 70%);filter:blur(24px)}
+.cap{position:absolute;left:0;right:0;bottom:-6px;text-align:center;font-size:12px;color:var(--muted)}
+.legend{display:grid;gap:8px;margin-top:34px;max-width:420px}
+.legend .row{display:grid;grid-template-columns:26px 1fr 40px;gap:10px;align-items:center;font-size:14px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(14,16,32,.6);backdrop-filter:blur(8px)}
+.legend .row .n{color:var(--em);font:500 12px 'JetBrains Mono'}
+.legend .row .v{text-align:right;color:var(--em);font:500 13px 'JetBrains Mono'}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:20px;background:rgba(14,16,32,.6);backdrop-filter:blur(6px)}
+.strip div{padding:26px;border-right:1px solid var(--line)}.strip div:last-child{border:0}
+.strip b{font:500 48px/1 'JetBrains Mono';letter-spacing:-.04em;display:block}
+.strip span{color:var(--muted);font-size:14px}
+section{padding:100px 0 0}
+h2{font-size:clamp(30px,4.2vw,56px);letter-spacing:-.03em;line-height:1.05;max-width:720px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;perspective:1100px}
+.tilt{--rx:0deg;--ry:0deg;--mx:50%;--my:50%;position:relative;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:26px;transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;transition:transform .15s ease-out,border-color .2s;overflow:hidden}
+.tilt:hover{border-color:rgba(124,108,255,.7)}
+.tilt::after{content:"";position:absolute;inset:0;background:radial-gradient(240px circle at var(--mx) var(--my),rgba(124,108,255,.28),transparent 60%);opacity:0;transition:opacity .25s;pointer-events:none}
+.tilt:hover::after{opacity:1}
+.tilt h3{font-size:22px;letter-spacing:-.02em;transform:translateZ(30px)}.tilt p{color:var(--muted);font-size:15px;margin-top:8px;transform:translateZ(15px)}
+.tilt .n{font:500 40px/1 'JetBrains Mono';color:var(--ind);display:block;margin-bottom:14px;transform:translateZ(45px)}
+.final{margin:100px 0 30px;text-align:center;padding:70px 20px;border:1px solid var(--line);border-radius:32px;background:radial-gradient(60% 100% at 50% 0,rgba(124,108,255,.28),transparent 70%),var(--panel)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 50px}
+@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:0}.strip,.grid{grid-template-columns:1fr}.strip div{border-right:0;border-bottom:1px solid var(--line)}}
+@media(prefers-reduced-motion:reduce){.tilt{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><div class="logo"><i></i>Chariow Radar</div><a class="btn" href="#">Connexion</a></nav>
+
+  <header class="hero">
+    <div>
+      <span class="tag mono">● Signaux détectés dans le monde</span>
+      <h1>Le marché du numérique, <em>sous vos yeux.</em></h1>
+      <p class="lead">Faites tourner le globe : chaque point lumineux est un produit repéré, chaque arc une méthode de vente qui fait voyager le trafic. Gratuit, sans compte pour explorer.</p>
+      <div class="cta"><a class="btn pri" href="#">Explorer le classement →</a><a class="btn" href="#">Repérer un produit</a></div>
+      <div class="legend" aria-label="Exemple de classement">
+        <div class="row"><span class="n">01</span><span>Formation SEO Pro</span><span class="v">87</span></div>
+        <div class="row"><span class="n">02</span><span>Pack Canva Business</span><span class="v">72</span></div>
+        <div class="row"><span class="n">03</span><span>Ebook Cuisine Express</span><span class="v">64</span></div>
+      </div>
+    </div>
+    <div class="globe" id="globe" role="img" aria-label="Globe 3D interactif montrant des produits repérés reliés par des arcs de trafic. Glissez pour le faire tourner.">
+      <div class="glow"></div>
+      <canvas id="cv"></canvas>
+      <div class="cap">Aperçu illustratif · glissez pour tourner</div>
+    </div>
+  </header>
+
+  <div class="strip">
+    <div><b>128</b><span>produits repérés</span></div>
+    <div><b>12</b><span>méthodes suivies</span></div>
+    <div><b>74/100</b><span>trafic moyen</span></div>
+  </div>
+
+  <section>
+    <h2>Trois gestes pour voir clair dans le marché.</h2>
+    <div class="grid">
+      <div class="tilt" data-tilt><span class="n">01</span><h3>Repérez</h3><p>Ajoutez un produit et les méthodes qui l'ont fait connaître.</p></div>
+      <div class="tilt" data-tilt><span class="n">02</span><h3>Comparez</h3><p>Le classement public met en avant ce qui performe vraiment.</p></div>
+      <div class="tilt" data-tilt><span class="n">03</span><h3>Décodez</h3><p>Les analyses montrent les routes qui ramènent le plus de trafic.</p></div>
+    </div>
+  </section>
+
+  <div class="final"><h2 style="margin:0 auto 26px">Ton prochain produit gagnant est déjà sur le radar.</h2><a class="btn pri" href="#">Commencer gratuitement →</a></div>
+  <footer class="mono">Chariow Radar · maquette G</footer>
+</div>
+
+<script>
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const box=document.getElementById('globe'),cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+let W=0,H=0,R=0,dpr=1;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=box.clientWidth;H=box.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);R=Math.min(W,H)*0.40;}
+addEventListener('resize',resize);resize();
+// points de la sphère (spirale de Fibonacci)
+const N=window.innerWidth<700?650:1100,pts=[];
+for(let i=0;i<N;i++){const y=1-(i/(N-1))*2,r=Math.sqrt(1-y*y),t=i*Math.PI*(3-Math.sqrt(5));pts.push([Math.cos(t)*r,y,Math.sin(t)*r]);}
+// produits (latitude, longitude, nom, score)
+const ll=(la,lo)=>{la*=Math.PI/180;lo*=Math.PI/180;return[Math.cos(la)*Math.sin(lo),Math.sin(la),Math.cos(la)*Math.cos(lo)];};
+const spots=[
+ {p:ll(18,-20),n:'Formation SEO',s:87},{p:ll(-8,45),n:'Pack Canva',s:72},{p:ll(30,95),n:'Ebook Cuisine',s:64},
+ {p:ll(-28,-65),n:'Template Notion',s:58},{p:ll(48,10),n:'Coaching WhatsApp',s:55},{p:ll(8,150),n:'Montage Vidéo',s:43}];
+const links=[[0,1],[1,2],[0,4],[3,0],[2,5],[4,2]];
+let rotY=0.6,rotX=-0.35,vel=0.0035,drag=false,lx=0,ly=0;
+function rot(v){const cy=Math.cos(rotY),sy=Math.sin(rotY),cx=Math.cos(rotX),sx=Math.sin(rotX);
+  let x=v[0]*cy+v[2]*sy,z=-v[0]*sy+v[2]*cy,y=v[1];const y2=y*cx-z*sx,z2=y*sx+z*cx;return[x,y2,z2];}
+const proj=(v,k=1)=>[W/2+v[0]*R*k,H/2-v[1]*R*k];
+function slerp(a,b,t){const d=Math.max(-1,Math.min(1,a[0]*b[0]+a[1]*b[1]+a[2]*b[2])),om=Math.acos(d),s=Math.sin(om)||1;
+  const f=Math.sin((1-t)*om)/s,g=Math.sin(t*om)/s;return[a[0]*f+b[0]*g,a[1]*f+b[1]*g,a[2]*f+b[2]*g];}
+function frame(time){
+  ctx.clearRect(0,0,W,H);
+  // halo de la sphère
+  const g=ctx.createRadialGradient(W/2,H/2,R*.2,W/2,H/2,R*1.05);g.addColorStop(0,'rgba(124,108,255,.10)');g.addColorStop(1,'rgba(124,108,255,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(W/2,H/2,R*1.05,0,7);ctx.fill();
+  // points
+  for(const p of pts){const v=rot(p),[x,y]=proj(v),a=0.12+0.55*Math.max(0,v[2]*.5+.5);
+    ctx.fillStyle=v[2]>0?`rgba(190,184,255,${a})`:`rgba(124,108,255,${a*.35})`;ctx.fillRect(x-.8,y-.8,1.6,1.6);}
+  // arcs
+  links.forEach(([i,j],k)=>{const a=spots[i].p,b=spots[j].p;const grad=[];
+    ctx.beginPath();let started=false;
+    for(let t=0;t<=1.0001;t+=1/40){const m=slerp(a,b,t),lift=1+0.28*Math.sin(Math.PI*t),v=rot([m[0]*lift,m[1]*lift,m[2]*lift]),[x,y]=proj(v);
+      if(v[2]<-0.15){started=false;continue}
+      if(!started){ctx.moveTo(x,y);started=true}else ctx.lineTo(x,y);}
+    ctx.strokeStyle='rgba(46,242,166,.5)';ctx.lineWidth=1.2;ctx.stroke();
+    // particule qui voyage
+    const t=((time/2600)+k*.37)%1,m=slerp(a,b,t),lift=1+0.28*Math.sin(Math.PI*t),v=rot([m[0]*lift,m[1]*lift,m[2]*lift]);
+    if(v[2]>-0.15){const[x,y]=proj(v);ctx.fillStyle='#fff';ctx.shadowColor='#2EF2A6';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(x,y,2.2,0,7);ctx.fill();ctx.shadowBlur=0;}
+  });
+  // produits
+  spots.forEach((s,i)=>{const v=rot(s.p);if(v[2]<0.02)return;const[x,y]=proj(v),pulse=(time/1200+i*.4)%1;
+    ctx.strokeStyle=`rgba(46,242,166,${1-pulse})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,4+pulse*16,0,7);ctx.stroke();
+    ctx.fillStyle='#2EF2A6';ctx.shadowColor='#2EF2A6';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(x,y,4,0,7);ctx.fill();ctx.shadowBlur=0;
+    if(v[2]>0.35){const label=`${s.n} · ${s.s}`;ctx.font='500 11px JetBrains Mono, monospace';const w=ctx.measureText(label).width+16;
+      ctx.fillStyle='rgba(14,16,32,.92)';ctx.strokeStyle='#222645';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x+10,y-11,w,22,8);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#EDEEFF';ctx.fillText(label,x+18,y+4);}
+  });
+  if(!drag&&!reduce)rotY+=vel;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+box.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;box.setPointerCapture(e.pointerId)});
+box.addEventListener('pointermove',e=>{if(!drag)return;rotY+=(e.clientX-lx)*0.008;rotX=Math.max(-1,Math.min(1,rotX+(e.clientY-ly)*0.006));lx=e.clientX;ly=e.clientY});
+['pointerup','pointercancel'].forEach(ev=>box.addEventListener(ev,()=>drag=false));
+// cartes inclinées
+document.querySelectorAll('[data-tilt]').forEach(el=>{
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    el.style.setProperty('--mx',x*100+'%');el.style.setProperty('--my',y*100+'%');
+    if(!reduce){el.style.setProperty('--ry',(x-.5)*14+'deg');el.style.setProperty('--rx',(.5-y)*14+'deg');}});
+  el.addEventListener('pointerleave',()=>{el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg')});
+});
+</script>
+</body>
+</html>

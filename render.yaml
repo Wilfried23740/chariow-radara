@@ -1,0 +1,29 @@
+# Déploiement de l'API sur Render (offre gratuite). Les valeurs secrètes se saisissent
+# dans le tableau de bord Render, jamais dans ce fichier.
+services:
+  - type: web
+    name: chariow-radar-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    # Applique les migrations, charge le catalogue de méthodes (sans doublon), puis démarre l'API.
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: TURNSTILE_SECRET_KEY
+        sync: false

@@ -117,6 +117,100 @@
 }
 
 @layer components {
+  /* Tunnel d'ouverture de la landing page. */
+  .tunnel-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 78vmin;
+    height: 78vmin;
+    margin: -39vmin 0 0 -39vmin;
+    border-radius: 9999px;
+    border: 1px solid rgb(var(--brand) / 0.5);
+    box-shadow:
+      0 0 40px rgb(var(--brand) / 0.12),
+      inset 0 0 40px rgb(var(--brand) / 0.08);
+    animation: ring-rotate 40s linear infinite;
+  }
+  .tunnel-ring:nth-child(3n) {
+    border-color: rgb(var(--primary) / 0.45);
+    border-style: dashed;
+  }
+  .tunnel-ring::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    width: 8px;
+    height: 8px;
+    margin-left: -4px;
+    border-radius: 9999px;
+    background: rgb(var(--primary));
+    box-shadow: 0 0 14px rgb(var(--primary));
+  }
+  .tunnel-core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 90vmin;
+    height: 90vmin;
+    margin: -45vmin 0 0 -45vmin;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgb(var(--primary) / 0.5), rgb(var(--brand) / 0.25) 40%, transparent 70%);
+    filter: blur(10px);
+  }
+  .tunnel-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 230px;
+    margin: -52px 0 0 -115px;
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: linear-gradient(160deg, rgb(var(--card) / 0.85), rgb(var(--card) / 0.45));
+    border: 1px solid rgb(var(--foreground) / 0.18);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 60px -20px rgb(var(--brand) / 0.6);
+  }
+  /* Sur téléphone, les cartes passeraient derrière le texte : on garde seulement les anneaux. */
+  @media (max-width: 639px) {
+    .tunnel-card {
+      display: none;
+    }
+  }
+  .stage-big {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(70px, 14vw, 180px);
+    line-height: 1;
+    letter-spacing: -0.06em;
+    background: linear-gradient(180deg, rgb(var(--foreground)), rgb(var(--primary)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .tunnel-drip {
+    animation: drip 1.6s infinite;
+  }
+  @keyframes ring-rotate {
+    to {
+      rotate: 360deg;
+    }
+  }
+  @keyframes drip {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    60% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+
   /* Balayage du radar : un secteur dégradé qui tourne. */
   .radar-sweep {
     background: conic-gradient(

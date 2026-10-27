@@ -54,15 +54,21 @@ function App() {
     <div className="min-h-dvh bg-background">
       <Header view={headerView} onNavigate={handleNavigate} onLogin={() => setAuthOpen(true)} />
       {/* Marge basse : laisse la place à la barre d'onglets mobile. */}
-      <main className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-8">
-        {view === 'home' && (
+      {/* L'accueil gère sa propre mise en page : la scène d'ouverture occupe toute la largeur. */}
+      {view === 'home' && (
+        <div className="pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-12">
           <Landing
-            onExplore={() => setView('dashboard')}
-            onAdd={() => setView('add')}
-            onInsights={() => setView('insights')}
+            onExplore={() => handleNavigate('dashboard')}
+            onAdd={() => handleNavigate('add')}
+            onInsights={() => handleNavigate('insights')}
             onProductClick={handleProductClick}
           />
-        )}
+        </div>
+      )}
+      <main
+        hidden={view === 'home'}
+        className="max-w-7xl 2xl:max-w-[88rem] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-8"
+      >
         {view === 'dashboard' && (
           <Dashboard
             key={refreshKey}

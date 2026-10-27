@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, BarChart3, Layers, Link2, Plus, TrendingUp, Users } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Product, ProductMethod } from '@/types';
 import { ProductCard } from './ProductCard';
 import { Button } from '@/components/ui/Button';
+import { TunnelStage } from './landing/TunnelStage';
 
 interface LandingProps {
   onExplore: () => void;
@@ -45,20 +46,13 @@ const STEPS = [
   },
 ];
 
-// Positions des signaux sur le radar (en % du cercle) et leur couleur.
-const BLIP_SLOTS = [
-  { left: '68%', top: '24%', tone: 'text-primary bg-primary', delay: '0s' },
-  { left: '26%', top: '34%', tone: 'text-brand bg-brand', delay: '0.6s' },
-  { left: '74%', top: '66%', tone: 'text-amber-500 bg-amber-500', delay: '1.2s' },
-  { left: '36%', top: '76%', tone: 'text-primary bg-primary', delay: '1.8s' },
-];
-
 // Affiché tant qu'aucun produit réel n'existe : clairement présenté comme un exemple.
 const SAMPLE_SIGNALS = [
   { label: 'Formation SEO', score: 87 },
   { label: 'Pack de templates', score: 72 },
   { label: 'E-book vendre en ligne', score: 64 },
   { label: 'Coaching WhatsApp', score: 58 },
+  { label: 'Montage vidéo', score: 43 },
 ];
 
 export function Landing({ onExplore, onAdd, onInsights, onProductClick }: LandingProps) {
@@ -98,59 +92,21 @@ export function Landing({ onExplore, onAdd, onInsights, onProductClick }: Landin
   const top = products?.slice(0, 3) ?? [];
   const hasReal = (products?.length ?? 0) > 0;
   const signals = hasReal
-    ? products!.slice(0, BLIP_SLOTS.length).map((p) => ({ label: p.title, score: p.traffic_score }))
+    ? products!.slice(0, 6).map((p) => ({ label: p.title, score: p.traffic_score }))
     : SAMPLE_SIGNALS;
 
   return (
-    <div className="space-y-24 sm:space-y-32">
-      {/* Hero */}
-      <section aria-labelledby="hero-title" className="grid items-center gap-12 pt-4 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:pt-10">
-        <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-primary/35 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-primary">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-            Veille des produits Chariow
-          </p>
-          <h1
-            id="hero-title"
-            className="mt-6 font-display text-5xl leading-[0.98] text-foreground text-balance sm:text-6xl lg:text-7xl"
-          >
-            Voyez ce qui{' '}
-            <span className="bg-gradient-to-r from-brand to-primary bg-clip-text text-transparent">
-              se vend
-            </span>{' '}
-            avant les autres.
-          </h1>
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Chariow Radar classe les produits numériques et révèle les méthodes de vente qui font
-            vraiment venir le trafic. Public, gratuit, sans compte pour explorer.
-          </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-            <Button variant="primary" size="lg" onClick={onExplore}>
-              Explorer le classement
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Button>
-            <Button size="lg" onClick={onAdd}>
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              Repérer un produit
-            </Button>
-          </div>
-        </div>
-
-        <Radar signals={signals} illustrative={!hasReal} />
-      </section>
-
-      {/* Chiffres réels */}
-      <section aria-label="Chiffres du site" className="-mt-12 sm:-mt-16">
-        <dl className="grid grid-cols-1 divide-y divide-border overflow-hidden rounded-[1.25rem] border border-border bg-card/60 backdrop-blur-md sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          <Stat label="produits repérés" value={stats ? String(stats.products) : '—'} />
-          <Stat label="méthodes suivies" value={stats ? String(stats.methods) : '—'} />
-          <Stat
-            label="trafic moyen"
-            value={stats && stats.products > 0 ? `${stats.avgTraffic}/100` : '—'}
-          />
-        </dl>
-      </section>
-
+    <>
+      <TunnelStage
+        spots={signals}
+        illustrative={!hasReal}
+        productCount={stats ? stats.products : null}
+        methodCount={stats ? stats.methods : null}
+        onExplore={onExplore}
+        onAdd={onAdd}
+      />
+      <div className="mx-auto max-w-7xl space-y-24 px-4 pt-16 sm:space-y-32 sm:px-6 sm:pt-24 lg:px-8 2xl:max-w-[88rem]">
+      {/* Fin de la scène plein écran */}
       {/* Fonctionnalités (bento) */}
       <section aria-labelledby="features-title">
         <SectionTitle
@@ -328,64 +284,8 @@ export function Landing({ onExplore, onAdd, onInsights, onProductClick }: Landin
           </div>
         </div>
       </section>
-    </div>
-  );
-}
-
-function Radar({
-  signals,
-  illustrative,
-}: {
-  signals: { label: string; score: number }[];
-  illustrative: boolean;
-}) {
-  return (
-    <figure className="mx-auto w-full max-w-[34rem]">
-      <div
-        role="img"
-        aria-label="Radar affichant les produits en tête du classement avec leur score de trafic"
-        className="relative aspect-square w-full"
-      >
-        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgb(var(--brand)/0.14),transparent_70%)]" />
-        {['inset-0', 'inset-[16%]', 'inset-[32%]', 'inset-[48%]'].map((inset) => (
-          <div key={inset} className={`absolute rounded-full border border-border ${inset}`} />
-        ))}
-        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border" />
-        <div className="absolute left-0 right-0 top-1/2 h-px bg-border" />
-        <div className="radar-sweep absolute inset-0 rounded-full motion-safe:animate-sweep" />
-        <div className="absolute left-1/2 top-1/2 -ml-[5px] -mt-[5px] h-2.5 w-2.5 rounded-full bg-foreground" />
-
-        {signals.slice(0, BLIP_SLOTS.length).map((s, i) => {
-          const slot = BLIP_SLOTS[i];
-          const [text, bg] = slot.tone.split(' ');
-          return (
-            <div key={`${s.label}-${i}`} className="absolute" style={{ left: slot.left, top: slot.top }}>
-              <span
-                className={`blip absolute -ml-1.5 -mt-1.5 block h-3 w-3 rounded-full ${text} ${bg}`}
-                style={{ animationDelay: slot.delay }}
-              />
-              <span className="absolute left-4 top-0 hidden max-w-[11rem] -translate-y-1/2 truncate whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1 font-mono text-[11px] text-foreground sm:block">
-                {s.label} · <span className="text-primary">{s.score}</span>
-              </span>
-            </div>
-          );
-        })}
       </div>
-      <figcaption className="mt-4 text-center text-xs text-muted-foreground">
-        {illustrative
-          ? "Aperçu illustratif, avec des données d'exemple."
-          : 'Les produits en tête du classement, avec leur score de trafic.'}
-      </figcaption>
-    </figure>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="px-6 py-6">
-      <dd className="font-mono text-4xl leading-none tracking-tight text-foreground sm:text-5xl">{value}</dd>
-      <dt className="mt-2 text-sm text-muted-foreground">{label}</dt>
-    </div>
+    </>
   );
 }
 

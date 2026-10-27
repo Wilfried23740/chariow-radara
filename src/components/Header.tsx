@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Radar, LayoutDashboard, Plus, BarChart3, LogIn, LogOut, Sun, Moon } from 'lucide-react';
+﻿import { useState } from 'react';
+import { Radar, Home, LayoutDashboard, Plus, BarChart3, LogIn, LogOut, Sun, Moon } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 
 type View = 'home' | 'dashboard' | 'add' | 'insights';
@@ -10,7 +10,8 @@ interface HeaderProps {
   onLogin: () => void;
 }
 
-const TABS: { view: Exclude<View, 'home'>; label: string; icon: typeof Plus }[] = [
+const TABS: { view: View; label: string; icon: typeof Plus }[] = [
+  { view: 'home', label: 'Accueil', icon: Home },
   { view: 'dashboard', label: 'Classement', icon: LayoutDashboard },
   { view: 'insights', label: 'Analyses', icon: BarChart3 },
   { view: 'add', label: 'Repérer', icon: Plus },
@@ -49,7 +50,7 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
               </div>
               <div className="text-left min-w-0">
                 <span className="block font-display text-lg text-foreground leading-none truncate">Chariow Radar</span>
-                <p className="hidden sm:block font-mono text-[10px] uppercase tracking-widest text-muted-foreground leading-none mt-1">
+                <p className="hidden lg:block font-mono text-[10px] uppercase tracking-widest text-muted-foreground leading-none mt-1">
                   Repérage & analyse
                 </p>
               </div>
@@ -69,8 +70,8 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
                   }`}
                 >
                   <Icon className="w-4 h-4" aria-hidden="true" />
-                  <span className="hidden md:inline">{label}</span>
-                  <span className="md:hidden sr-only">{label}</span>
+                  <span className="hidden lg:inline">{label}</span>
+                  <span className="lg:hidden sr-only">{label}</span>
                 </button>
               ))}
             </nav>
@@ -92,7 +93,7 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
                     className="flex items-center gap-1.5 min-h-11 min-w-11 justify-center px-3 rounded-full text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                     <LogOut className="w-4 h-4" aria-hidden="true" />
-                    <span className="hidden md:inline">Déconnexion</span>
+                    <span className="hidden lg:inline">Déconnexion</span>
                   </button>
                 ) : (
                   <button
@@ -113,7 +114,7 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
         aria-label="Navigation principale"
         className="sm:hidden fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
       >
-        <ul className="grid grid-cols-3">
+        <ul className="grid grid-cols-4">
           {TABS.map(({ view: v, label, icon: Icon }) => (
             <li key={v}>
               <button
@@ -139,3 +140,5 @@ export function Header({ view, onNavigate, onLogin }: HeaderProps) {
     </>
   );
 }
+
+

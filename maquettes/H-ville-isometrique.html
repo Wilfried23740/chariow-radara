@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette H — Ville isométrique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080F;--panel:#0E1020;--line:#222645;--text:#EDEEFF;--muted:#9A9CC4;--ind:#7C6CFF;--em:#2EF2A6;--amber:#FFC24B}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 75% 20%,rgba(124,108,255,.24),transparent 70%),radial-gradient(40% 40% at 8% 85%,rgba(46,242,166,.1),transparent 70%)}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px}
+.logo i{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 14px var(--em)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font-weight:500;text-decoration:none;color:var(--text);border:1px solid var(--line);transition:.2s}
+.btn:hover{border-color:var(--ind)}
+.btn.pri{background:var(--em);color:#04150E;border-color:var(--em);font-weight:700;box-shadow:0 0 32px rgba(46,242,166,.35)}
+.btn.pri:hover{box-shadow:0 0 48px rgba(46,242,166,.55);transform:translateY(-1px)}
+.hero{display:grid;grid-template-columns:.9fr 1.1fr;gap:10px;align-items:center;padding:20px 0 60px;min-height:calc(100dvh - 80px)}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--em);border:1px solid rgba(46,242,166,.35);padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(42px,6vw,84px);line-height:.98;letter-spacing:-.035em;margin:22px 0}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--ind),var(--em));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);font-size:18px;max-width:480px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+/* ===== Scène isométrique ===== */
+.iso-wrap{position:relative;width:100%;display:grid;place-items:center;perspective:2400px;cursor:grab;touch-action:pan-y;user-select:none}
+.iso-wrap:active{cursor:grabbing}
+.iso{--rz:-45deg;--k:1;position:relative;width:560px;height:560px;transform-style:preserve-3d;transform:scale(var(--k)) rotateX(58deg) rotateZ(var(--rz))}
+.floor{position:absolute;inset:-40px;border-radius:50%;transform-style:flat;
+  background:
+   repeating-radial-gradient(circle at center,transparent 0 69px,rgba(124,108,255,.32) 70px 71px),
+   linear-gradient(rgba(124,108,255,.12) 1px,transparent 1px) 0 0/56px 56px,
+   linear-gradient(90deg,rgba(124,108,255,.12) 1px,transparent 1px) 0 0/56px 56px,
+   radial-gradient(circle,rgba(124,108,255,.22),rgba(14,16,32,.0) 70%);
+  border:1px solid rgba(124,108,255,.5);box-shadow:0 0 90px rgba(124,108,255,.25)}
+.sweep{position:absolute;inset:-40px;border-radius:50%;background:conic-gradient(from 0deg,rgba(46,242,166,.45),rgba(46,242,166,0) 26%,transparent 26%);transform:translateZ(1px);animation:spin 6s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.cube{position:absolute;width:92px;height:92px;transform-style:preserve-3d;--c1:#7C6CFF;--c2:#2EF2A6}
+.face{position:absolute;backface-visibility:hidden}
+.top{inset:0;transform:translateZ(var(--h));background:linear-gradient(135deg,var(--c2),var(--c1));box-shadow:0 0 0 1px rgba(255,255,255,.35) inset,0 0 30px color-mix(in srgb,var(--c2) 60%,transparent)}
+.front,.back,.left,.right{background:linear-gradient(180deg,var(--c1),color-mix(in srgb,var(--c1) 45%,#0a0b22));box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
+.front{left:0;top:100%;width:100%;height:var(--h);transform-origin:50% 0;transform:rotateX(90deg);filter:brightness(.95)}
+.back{left:0;bottom:100%;width:100%;height:var(--h);transform-origin:50% 100%;transform:rotateX(-90deg);filter:brightness(.7)}
+.left{right:100%;top:0;width:var(--h);height:100%;transform-origin:100% 50%;transform:rotateY(90deg);filter:brightness(.78)}
+.right{left:100%;top:0;width:var(--h);height:100%;transform-origin:0 50%;transform:rotateY(-90deg);filter:brightness(.88)}
+.shadow{inset:-6px;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);transform:translateZ(2px)}
+.label{position:absolute;left:50%;top:50%;white-space:nowrap;transform-origin:0 0;
+  transform:translateZ(calc(var(--h) + 16px)) rotateZ(calc(var(--rz) * -1)) rotateX(-58deg) translate(-50%,-100%);
+  background:rgba(14,16,32,.94);border:1px solid var(--line);border-radius:10px;padding:5px 10px;font:500 12px 'JetBrains Mono';pointer-events:none}
+.label b{color:var(--em);font-weight:500}
+.label::after{content:"";position:absolute;left:50%;top:100%;width:1px;height:12px;background:var(--em)}
+.cube.hot .top{filter:brightness(1.25)}
+.hintdrag{position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:12px;color:var(--muted)}
+/* ===== Chiffres + cartes empilées ===== */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:20px;background:rgba(14,16,32,.6);backdrop-filter:blur(6px)}
+.strip div{padding:26px;border-right:1px solid var(--line)}.strip div:last-child{border:0}
+.strip b{font:500 48px/1 'JetBrains Mono';letter-spacing:-.04em;display:block}
+.strip span{color:var(--muted);font-size:14px}
+section{padding:110px 0 0}
+h2{font-size:clamp(30px,4.2vw,56px);letter-spacing:-.03em;line-height:1.05;max-width:720px}
+.stack{margin-top:50px;display:grid;gap:0}
+.scard{position:sticky;top:calc(84px + var(--i)*22px);margin-bottom:34px;transform-origin:50% 0;will-change:transform;
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:34px;border-radius:30px;min-height:300px;
+  background:linear-gradient(160deg,#141733,var(--panel));border:1px solid var(--line);box-shadow:0 30px 70px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.03) inset}
+.scard .n{font:500 14px 'JetBrains Mono';color:var(--em)}
+.scard h3{font-size:clamp(28px,3.6vw,44px);letter-spacing:-.03em;line-height:1.05;margin:10px 0}
+.scard p{color:var(--muted);max-width:420px}
+.art{aspect-ratio:16/10;border-radius:20px;border:1px solid var(--line);background:#0a0c1c;position:relative;overflow:hidden;display:grid;place-items:center}
+.art i{position:absolute;border-radius:50%;border:1px solid rgba(124,108,255,.5)}
+.art .pt{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 18px var(--em);border:0}
+.bars3{display:flex;align-items:flex-end;gap:12px;height:70%;}
+.bars3 u{width:34px;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,var(--em),var(--ind));text-decoration:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:20px;justify-content:center}
+.chips span{border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.final{margin:90px 0 30px;text-align:center;padding:70px 20px;border:1px solid var(--line);border-radius:32px;background:radial-gradient(60% 100% at 50% 0,rgba(124,108,255,.28),transparent 70%),var(--panel)}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 50px}
+@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:0}.strip{grid-template-columns:1fr}.strip div{border-right:0;border-bottom:1px solid var(--line)}.scard{grid-template-columns:1fr;padding:24px}}
+@media(prefers-reduced-motion:reduce){.sweep{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><div class="logo"><i></i>Chariow Radar</div><a class="btn" href="#">Connexion</a></nav>
+
+  <header class="hero">
+    <div>
+      <span class="tag mono">● Classement en relief</span>
+      <h1>Le classement qui <em>prend de la hauteur.</em></h1>
+      <p class="lead">Chaque produit devient une tour dont la hauteur est son score de trafic. Faites pivoter la ville, survolez une tour, repérez d'un coup d'œil qui domine le marché.</p>
+      <div class="cta"><a class="btn pri" href="#">Explorer le classement →</a><a class="btn" href="#">Repérer un produit</a></div>
+    </div>
+    <div class="iso-wrap" id="wrap" role="img" aria-label="Scène 3D : cinq tours dont la hauteur représente le score de trafic de cinq produits. Glissez pour faire pivoter.">
+      <div class="iso" id="iso"><div class="floor"></div><div class="sweep"></div></div>
+      <div class="hintdrag">Aperçu illustratif · glissez pour pivoter</div>
+    </div>
+  </header>
+
+  <div class="strip">
+    <div><b>128</b><span>produits repérés</span></div>
+    <div><b>12</b><span>méthodes suivies</span></div>
+    <div><b>74/100</b><span>trafic moyen</span></div>
+  </div>
+
+  <section>
+    <h2>Trois étapes, et le marché devient lisible.</h2>
+    <div class="stack" id="stack">
+      <article class="scard" style="--i:0"><div><span class="n">01 — Repérer</span><h3>Ajoutez un produit vu sur Chariow</h3><p>Titre, créateur, prix, lien et vos estimations de trafic et de ventes.</p></div>
+        <div class="art"><i style="width:80%;aspect-ratio:1"></i><i style="width:55%;aspect-ratio:1"></i><i style="width:30%;aspect-ratio:1"></i><i class="pt"></i></div></article>
+      <article class="scard" style="--i:1"><div><span class="n">02 — Associer</span><h3>Reliez les méthodes qui font venir le monde</h3><p>Publicités, TikTok, email, affiliation… avec la part de trafic de chacune.</p></div>
+        <div class="art"><div class="chips"><span>TikTok</span><span>Facebook Ads</span><span>WhatsApp</span><span>Email</span><span>Affiliation</span><span>SEO</span></div></div></article>
+      <article class="scard" style="--i:2"><div><span class="n">03 — Décider</span><h3>Comparez et choisissez ce qui marche</h3><p>Le classement et les analyses montrent quels produits et quelles méthodes ressortent vraiment.</p></div>
+        <div class="art"><div class="bars3"><u style="height:90%"></u><u style="height:72%"></u><u style="height:60%"></u><u style="height:44%"></u><u style="height:30%"></u></div></div></article>
+    </div>
+  </section>
+
+  <div class="final"><h2 style="margin:0 auto 26px">Ton prochain produit gagnant est déjà sur le radar.</h2><a class="btn pri" href="#">Commencer gratuitement →</a></div>
+  <footer class="mono">Chariow Radar · maquette H</footer>
+</div>
+
+<script>
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const iso=document.getElementById('iso'),wrap=document.getElementById('wrap');
+const DATA=[
+ {n:'Formation SEO Pro',s:87,x:370,y:50,c1:'#7C6CFF',c2:'#2EF2A6'},
+ {n:'Pack Canva Business',s:72,x:230,y:130,c1:'#7C6CFF',c2:'#5CC8FF'},
+ {n:'Ebook Cuisine Express',s:64,x:370,y:250,c1:'#6a5cf0',c2:'#9d8cff'},
+ {n:'Template Notion',s:58,x:90,y:210,c1:'#6a5cf0',c2:'#c084fc'},
+ {n:'Coaching WhatsApp',s:43,x:230,y:360,c1:'#5b4fd8',c2:'#FFC24B'}];
+const cubes=DATA.map((d,i)=>{
+  const c=document.createElement('div');c.className='cube';c.style.left=d.x+'px';c.style.top=d.y+'px';
+  c.style.setProperty('--c1',d.c1);c.style.setProperty('--c2',d.c2);c.style.setProperty('--h','0px');
+  c.innerHTML=`<div class="face shadow"></div><div class="face back"></div><div class="face left"></div><div class="face right"></div><div class="face front"></div><div class="face top"></div><div class="label">N°${i+1} ${d.n} · <b>${d.s}</b></div>`;
+  iso.appendChild(c);
+  return {el:c,target:d.s*2.3,cur:0,hot:false};
+});
+cubes.forEach(o=>{o.el.addEventListener('pointerenter',()=>{o.hot=true;o.el.classList.add('hot')});o.el.addEventListener('pointerleave',()=>{o.hot=false;o.el.classList.remove('hot')});});
+// mise à l'échelle
+function fit(){const k=Math.min(1,wrap.clientWidth/640);iso.style.setProperty('--k',k);wrap.style.height=(560*k*0.95+120*k)+'px';}
+addEventListener('resize',fit);fit();
+// rotation : glisser + rotation douce
+let rz=-45,drag=false,lx=0;
+function setRz(v){rz=v;iso.style.setProperty('--rz',rz+'deg');}
+wrap.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;wrap.setPointerCapture(e.pointerId)});
+wrap.addEventListener('pointermove',e=>{if(drag){setRz(rz+(e.clientX-lx)*0.35);lx=e.clientX}});
+['pointerup','pointercancel'].forEach(ev=>wrap.addEventListener(ev,()=>drag=false));
+let t0=performance.now();
+function loop(now){
+  const dt=Math.min(40,now-t0);t0=now;
+  cubes.forEach((o,i)=>{const goal=o.target+(o.hot?18:0);o.cur+=(goal-o.cur)*Math.min(1,dt*(reduce?1:0.006));
+    o.el.style.setProperty('--h',o.cur.toFixed(1)+'px');});
+  if(!drag&&!reduce)setRz(rz+dt*0.006);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+// cartes empilées : les précédentes reculent quand la suivante arrive
+const cards=[...document.querySelectorAll('.scard')];
+function stack(){
+  cards.forEach((c,i)=>{
+    if(i===cards.length-1)return;
+    const next=cards[i+1].getBoundingClientRect().top,stick=84+(i+1)*22,d=Math.max(0,Math.min(1,(next-stick)/420));
+    const s=reduce?1:0.93+0.07*d;c.style.transform=`scale(${s})`;c.style.filter=`brightness(${0.65+0.35*d})`;
+  });
+}
+addEventListener('scroll',stack,{passive:true});stack();
+</script>
+</body>
+</html>

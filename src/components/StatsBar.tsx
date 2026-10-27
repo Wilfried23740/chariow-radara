@@ -38,7 +38,7 @@ export function StatsBar({ products, trackedMethods }: StatsBarProps) {
             </div>
             <div className="min-w-0">
               <p className="font-mono text-xl font-medium text-foreground leading-tight">{stat.value}</p>
-              <p className="text-xs text-muted-foreground truncate">{stat.label}</p>
+              <p className="text-xs text-muted-foreground leading-tight">{stat.label}</p>
             </div>
           </div>
         );
