@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Search, Filter, Loader2, Inbox } from 'lucide-react';
+import { Search, Filter, Inbox } from 'lucide-react';
 import { api, errorMessage } from '@/lib/api';
 import type { Product, ProductCategory, ProductMethod } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
 import { ProductCard } from './ProductCard';
 import { StatsBar } from './StatsBar';
+import { Button } from '@/components/ui/Button';
 
 interface DashboardProps {
   onProductClick: (product: Product) => void;
@@ -88,14 +89,14 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-2xl text-foreground">Classement des produits</h2>
+        <h2 className="font-display text-3xl text-foreground">Classement des produits</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Les meilleurs produits digitaux repérés sur Chariow, classés par trafic généré.
         </p>
       </div>
 
       {loadError && (
-        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
+        <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
           {loadError}
         </div>
       )}
@@ -107,15 +108,17 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
+            aria-label="Rechercher un produit"
             placeholder="Rechercher par titre, créateur ou tag…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+            className="w-full min-h-11 pl-10 pr-4 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
+        <div className="flex items-center gap-2 [&>select]:min-h-11 [&>select]:flex-1 sm:[&>select]:flex-none">
+          <Filter className="w-4 h-4 text-muted-foreground shrink-0" aria-hidden="true" />
           <select
+            aria-label="Filtrer par catégorie"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as ProductCategory | 'all')}
             className="px-3 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -127,6 +130,7 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
             ))}
           </select>
           <select
+            aria-label="Trier par"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as SortBy)}
             className="px-3 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring"
@@ -139,15 +143,17 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
         </div>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      {/* Sur mobile : une seule ligne défilante au doigt ; sur grand écran : retour à la ligne. */}
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {(categories.slice(1) as ProductCategory[]).map((c) => (
           <button
             key={c}
             onClick={() => setCategoryFilter(categoryFilter === c ? 'all' : c)}
-            className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${
+            aria-pressed={categoryFilter === c}
+            className={`shrink-0 min-h-10 text-xs px-3.5 py-2 rounded-full border font-medium transition-all ${
               categoryFilter === c
-                ? 'bg-primary text-primary-foreground border-primary'
-                : 'bg-card text-muted-foreground border-border hover:border-primary/40'
+                ? 'bg-primary text-primary-foreground border-primary shadow-[0_0_18px_rgb(var(--primary)/0.3)]'
+                : 'bg-card text-muted-foreground border-border hover:border-brand/60 hover:text-foreground'
             }`}
           >
             {CATEGORY_LABELS[c]}
@@ -156,8 +162,22 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
+          role="status"
+          aria-busy="true"
+          aria-label="Chargement des produits"
+        >
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="rounded-2xl border border-border bg-card p-4 flex gap-4 motion-safe:animate-pulse">
+              <div className="w-20 h-20 rounded-xl bg-muted shrink-0" />
+              <div className="flex-1 space-y-2.5 py-1">
+                <div className="h-4 w-3/4 rounded bg-muted" />
+                <div className="h-3 w-1/2 rounded bg-muted" />
+                <div className="h-3 w-2/3 rounded bg-muted" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -170,12 +190,9 @@ export function Dashboard({ onProductClick, onNavigateAdd }: DashboardProps) {
               : 'Aucun produit ne correspond à votre recherche.'}
           </p>
           {products.length === 0 && (
-            <button
-              onClick={onNavigateAdd}
-              className="mt-4 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            >
+            <Button variant="primary" className="mt-4" onClick={onNavigateAdd}>
               Repérer mon premier produit
-            </button>
+            </Button>
           )}
         </div>
       ) : (

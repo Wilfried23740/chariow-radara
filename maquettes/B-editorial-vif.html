@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette B — Éditorial Vif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F6F0E4;--ink:#16131F;--ind:#4338CA;--em:#0F9D6E;--sun:#FFB52E;--pink:#FF6B8B;--white:#fff}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;overflow-x:hidden;
+background-image:radial-gradient(rgba(22,19,31,.07) 1px,transparent 1px);background-size:22px 22px}
+.serif{font-family:'Fraunces',Georgia,serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:2px solid var(--ink)}
+.logo{font-family:'Fraunces',serif;font-weight:800;font-size:24px;letter-spacing:-.02em}
+.logo span{background:var(--sun);padding:0 8px;border:2px solid var(--ink);border-radius:8px;margin-right:6px;box-shadow:3px 3px 0 var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 24px;border:2px solid var(--ink);border-radius:14px;background:var(--white);color:var(--ink);font-weight:700;text-decoration:none;box-shadow:4px 4px 0 var(--ink);transition:.15s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.pri{background:var(--ind);color:#fff}
+.btn.sm{min-height:42px;padding:0 16px;box-shadow:3px 3px 0 var(--ink)}
+.hero{padding:70px 0 40px;position:relative}
+.kicker{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:6px 12px;border-radius:8px;transform:rotate(-2deg)}
+h1{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(52px,10.5vw,148px);line-height:.88;letter-spacing:-.045em;margin:26px 0}
+h1 .hl{background:var(--sun);padding:0 .12em;border:3px solid var(--ink);border-radius:.14em;display:inline-block;transform:rotate(-1.5deg);box-shadow:6px 6px 0 var(--ink)}
+h1 i{color:var(--ind)}
+.lead{font-size:20px;max-width:560px}
+.cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.sticker{position:absolute;right:2%;top:90px;width:150px;height:150px;border-radius:50%;background:var(--pink);border:3px solid var(--ink);display:grid;place-items:center;text-align:center;font-family:'Fraunces',serif;font-weight:800;font-size:19px;line-height:1.05;transform:rotate(12deg);box-shadow:5px 5px 0 var(--ink);animation:wob 6s ease-in-out infinite}
+@keyframes wob{50%{transform:rotate(-6deg) scale(1.04)}}
+.marquee{margin:40px -20px 0;border-block:2px solid var(--ink);background:var(--ind);color:#fff;overflow:hidden;white-space:nowrap}
+.marquee div{display:inline-block;padding:14px 0;animation:mq 28s linear infinite;font-family:'Fraunces',serif;font-weight:600;font-size:22px}
+.marquee span{margin:0 22px}.marquee b{color:var(--sun)}
+@keyframes mq{to{transform:translateX(-50%)}}
+section{padding:90px 0 0}
+h2{font-family:'Fraunces',serif;font-weight:800;font-size:clamp(34px,5vw,64px);line-height:.98;letter-spacing:-.035em;max-width:760px}
+h2 i{color:var(--em)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.card{background:var(--white);border:2px solid var(--ink);border-radius:22px;padding:26px;box-shadow:6px 6px 0 var(--ink);position:relative;transition:.18s}
+.card:hover{transform:translate(-3px,-3px) rotate(-.6deg);box-shadow:10px 10px 0 var(--ink)}
+.card .num{font-family:'Fraunces',serif;font-weight:800;font-size:78px;line-height:.8;letter-spacing:-.05em}
+.card h3{font-family:'Fraunces',serif;font-size:26px;letter-spacing:-.02em;margin-top:14px}
+.card p{margin-top:8px;font-size:15.5px}
+.c-y{background:var(--sun)}.c-g{background:#C9F2DF}.c-v{background:#DAD6FF}
+.board{margin-top:50px;background:var(--white);border:2px solid var(--ink);border-radius:26px;box-shadow:8px 8px 0 var(--ink);overflow:hidden}
+.bh{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;background:var(--ink);color:var(--paper);font-weight:700}
+.line{display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;padding:18px 24px;border-top:2px solid var(--ink)}
+.line:first-of-type{border-top:0}
+.rk{font-family:'Fraunces',serif;font-weight:800;font-size:44px;letter-spacing:-.04em;line-height:1}
+.line:nth-child(2) .rk{color:var(--ind)}
+.line .t{font-weight:700;font-size:18px}.line .m{font-size:14px;color:#5b566b}
+.pill{border:2px solid var(--ink);border-radius:999px;padding:4px 14px;font-weight:700;font-size:14px;background:var(--sun);white-space:nowrap}
+.pill.g{background:#C9F2DF}.pill.v{background:#DAD6FF}
+.final{margin:110px 0 30px;background:var(--ind);color:#fff;border:3px solid var(--ink);border-radius:32px;padding:70px 30px;text-align:center;box-shadow:10px 10px 0 var(--ink)}
+.final h2{margin:0 auto;color:#fff}.final h2 i{color:var(--sun)}
+.final .cta{justify-content:center}
+.final .btn{background:var(--sun)}
+footer{text-align:center;padding:30px 0 50px;font-size:13px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}.sticker{display:none}.line{grid-template-columns:48px 1fr}.line .pill{grid-column:2;justify-self:start}.rk{font-size:34px}}
+@media(prefers-reduced-motion:reduce){.sticker,.marquee div{animation:none}.btn,.card{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><span>◎</span>Chariow Radar</div>
+    <a class="btn sm" href="#">Connexion</a>
+  </nav>
+
+  <header class="hero">
+    <span class="kicker">Le classement des produits numériques</span>
+    <h1>Repère ce qui <span class="hl">se vend</span>, comprends <i>pourquoi.</i></h1>
+    <p class="lead">Un classement public des produits vendus sur Chariow et l'analyse des méthodes qui leur amènent du trafic. Gratuit, ouvert à tous, sans compte pour explorer.</p>
+    <div class="cta">
+      <a class="btn pri" href="#">Voir le classement →</a>
+      <a class="btn" href="#">Repérer un produit</a>
+    </div>
+    <div class="sticker">100%<br>gratuit</div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div>
+      <span><b>★</b> Formation SEO Pro</span><span><b>★</b> Pack Canva Business</span><span><b>★</b> Ebook Cuisine Express</span><span><b>★</b> Template Notion</span><span><b>★</b> Coaching Vente WhatsApp</span><span><b>★</b> Formation SEO Pro</span><span><b>★</b> Pack Canva Business</span><span><b>★</b> Ebook Cuisine Express</span><span><b>★</b> Template Notion</span><span><b>★</b> Coaching Vente WhatsApp</span>
+    </div>
+  </div>
+
+  <section>
+    <h2>Trois gestes pour <i>voir clair</i> dans le marché.</h2>
+    <div class="grid">
+      <div class="card c-y"><div class="num">1</div><h3>Repère</h3><p>Ajoute un produit Chariow et note les méthodes qui l'ont lancé.</p></div>
+      <div class="card c-g"><div class="num">2</div><h3>Classe</h3><p>Le classement public met en avant ce qui performe vraiment.</p></div>
+      <div class="card c-v"><div class="num">3</div><h3>Décode</h3><p>Les analyses révèlent les méthodes qui font venir le trafic.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le podium <i>du moment.</i></h2>
+    <p style="margin-top:10px">Exemples illustratifs, les vrais produits arrivent avec vos repérages.</p>
+    <div class="board">
+      <div class="bh"><span>Top produits</span><span>Score trafic</span></div>
+      <div class="line"><span class="rk">01</span><div><div class="t">Formation SEO Pro</div><div class="m">Réseaux sociaux · Affiliation</div></div><span class="pill">87 pts</span></div>
+      <div class="line"><span class="rk">02</span><div><div class="t">Pack Canva Business</div><div class="m">WhatsApp · Influenceurs</div></div><span class="pill g">72 pts</span></div>
+      <div class="line"><span class="rk">03</span><div><div class="t">Ebook Cuisine Express</div><div class="m">Email · Publicité</div></div><span class="pill v">64 pts</span></div>
+    </div>
+  </section>
+
+  <div class="final">
+    <h2>Ton prochain best-seller commence <i>ici.</i></h2>
+    <div class="cta"><a class="btn" href="#">Créer mon compte gratuit →</a></div>
+  </div>
+  <footer>Chariow Radar · maquette B</footer>
+</div>
+</body>
+</html>

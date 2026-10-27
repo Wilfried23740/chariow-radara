@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Tag, Save, X, Loader2 } from 'lucide-react';
+import { Tag, Save, X } from 'lucide-react';
 import { api, errorMessage } from '@/lib/api';
+import { Button } from '@/components/ui/Button';
 import type { ProductCategory } from '@/types';
 import { CATEGORY_LABELS } from '@/types';
 
@@ -70,7 +71,7 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <h2 className="font-display text-2xl text-foreground">Repérer un produit</h2>
+        <h2 className="font-display text-3xl text-foreground">Repérer un produit</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Ajoutez un produit digital repéré sur Chariow pour suivre sa performance et ses méthodes de vente.
         </p>
@@ -89,8 +90,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Titre du produit *</label>
-            <input
+            <label htmlFor="add-1" className={labelClass}>Titre du produit *</label>
+            <input id="add-1"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               className={inputClass}
@@ -98,8 +99,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
             />
           </div>
           <div>
-            <label className={labelClass}>Créateur / Vendeur *</label>
-            <input
+            <label htmlFor="add-2" className={labelClass}>Créateur / Vendeur *</label>
+            <input id="add-2"
               value={form.creator}
               onChange={(e) => setForm({ ...form, creator: e.target.value })}
               className={inputClass}
@@ -109,8 +110,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
         </div>
 
         <div>
-          <label className={labelClass}>Description</label>
-          <textarea
+          <label htmlFor="add-3" className={labelClass}>Description</label>
+          <textarea id="add-3"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={3}
@@ -121,8 +122,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className={labelClass}>Catégorie</label>
-            <select
+            <label htmlFor="add-4" className={labelClass}>Catégorie</label>
+            <select id="add-4"
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value as ProductCategory })}
               className={inputClass}
@@ -135,8 +136,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
             </select>
           </div>
           <div>
-            <label className={labelClass}>Prix</label>
-            <input
+            <label htmlFor="add-5" className={labelClass}>Prix</label>
+            <input id="add-5"
               type="number"
               min="0"
               step="0.01"
@@ -146,8 +147,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
             />
           </div>
           <div>
-            <label className={labelClass}>Devise</label>
-            <select
+            <label htmlFor="add-6" className={labelClass}>Devise</label>
+            <select id="add-6"
               value={form.currency}
               onChange={(e) => setForm({ ...form, currency: e.target.value })}
               className={inputClass}
@@ -162,8 +163,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Lien Chariow</label>
-            <input
+            <label htmlFor="add-7" className={labelClass}>Lien Chariow</label>
+            <input id="add-7"
               value={form.chariow_url}
               onChange={(e) => setForm({ ...form, chariow_url: e.target.value })}
               className={inputClass}
@@ -171,8 +172,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
             />
           </div>
           <div>
-            <label className={labelClass}>Image / Aperçu (URL)</label>
-            <input
+            <label htmlFor="add-8" className={labelClass}>Image / Aperçu (URL)</label>
+            <input id="add-8"
               value={form.image_url}
               onChange={(e) => setForm({ ...form, image_url: e.target.value })}
               className={inputClass}
@@ -185,10 +186,10 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
           <h3 className="font-semibold text-foreground text-sm mb-4">Indicateurs de performance</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>
+              <label htmlFor="add-9" className={labelClass}>
                 Score de trafic : {form.traffic_score}/100
               </label>
-              <input
+              <input id="add-9"
                 type="range"
                 min="0"
                 max="100"
@@ -198,8 +199,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
               />
             </div>
             <div>
-              <label className={labelClass}>Ventes estimées</label>
-              <input
+              <label htmlFor="add-10" className={labelClass}>Ventes estimées</label>
+              <input id="add-10"
                 type="number"
                 min="0"
                 value={form.sales_estimate}
@@ -211,8 +212,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
               />
             </div>
             <div>
-              <label className={labelClass}>Note (0-5)</label>
-              <input
+              <label htmlFor="add-11" className={labelClass}>Note (0-5)</label>
+              <input id="add-11"
                 type="number"
                 min="0"
                 max="5"
@@ -226,8 +227,8 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
         </div>
 
         <div>
-          <label className={labelClass}>Tags (séparés par des virgules)</label>
-          <input
+          <label htmlFor="add-12" className={labelClass}>Tags (séparés par des virgules)</label>
+          <input id="add-12"
             value={tagsInput}
             onChange={(e) => setTagsInput(e.target.value)}
             className={inputClass}
@@ -236,32 +237,20 @@ export function AddProductForm({ onSaved, onCancel }: AddProductFormProps) {
         </div>
 
         {error && (
-          <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
+          <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
 
-        <div className="flex gap-2 pt-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
-          >
-            {saving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            Enregistrer
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border text-muted-foreground text-sm font-medium hover:bg-muted"
-          >
-            <X className="w-4 h-4" />
+        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row">
+          <Button variant="ghost" onClick={onCancel}>
+            <X className="h-4 w-4" aria-hidden="true" />
             Annuler
-          </button>
+          </Button>
+          <Button type="submit" variant="primary" loading={saving}>
+            {!saving && <Save className="h-4 w-4" aria-hidden="true" />}
+            Enregistrer
+          </Button>
         </div>
       </form>
     </div>

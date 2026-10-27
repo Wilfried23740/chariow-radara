@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette E — Commande Interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF0FF;--ink:#13123A;--mut:#5C5B86;--card:#fff;--line:rgba(19,18,58,.12);--ind:#4F46E5;--em:#059669;--lime:#C6F432;--rose:#FF5C8A}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 56px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/56px 100%;-webkit-mask:radial-gradient(70% 60% at 50% 20%,#000,transparent);mask:radial-gradient(70% 60% at 50% 20%,#000,transparent);opacity:.7}
+.mono{font-family:'JetBrains Mono',monospace}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{font-family:Syne;font-weight:800;font-size:22px;display:flex;gap:10px;align-items:center}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--ink);display:grid;place-items:center;color:var(--lime);font-style:normal;font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:14px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;font-weight:600;background:transparent;transition:.2s;cursor:pointer;font-family:inherit;font-size:15px}
+.btn:hover{background:var(--ink);color:#fff}
+.btn.pri{background:var(--ink);color:#fff}
+.btn.pri:hover{background:var(--ind);border-color:var(--ind)}
+.hero{text-align:center;padding:60px 0 30px}
+.kick{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;padding:6px 14px;border-radius:999px;background:var(--lime);color:#1b2300}
+h1{font-family:Syne;font-weight:800;font-size:clamp(44px,8vw,104px);line-height:.95;letter-spacing:-.045em;margin:24px auto;max-width:960px}
+h1 em{font-style:normal;color:var(--ind);position:relative;white-space:nowrap}
+h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.04em;height:.14em;background:var(--lime);z-index:-1;border-radius:99px}
+.lead{color:var(--mut);font-size:19px;max-width:580px;margin:0 auto}
+/* command box */
+.cmd{max-width:720px;margin:44px auto 0;background:var(--card);border:1.5px solid var(--ink);border-radius:22px;box-shadow:0 22px 0 -10px var(--ink),0 40px 80px -20px rgba(79,70,229,.45);text-align:left;overflow:hidden}
+.cmd-top{display:flex;align-items:center;gap:12px;padding:6px 18px;border-bottom:1.5px solid var(--ink)}
+.cmd-top svg{flex:none}
+.cmd input{flex:1;min-width:0;border:0;outline:0;font:500 18px Inter,sans-serif;color:var(--ink);padding:16px 0;background:transparent}
+.cmd input::placeholder{color:#8f8eb5}
+kbd{font:500 12px 'JetBrains Mono',monospace;border:1.5px solid var(--line);border-radius:7px;padding:3px 8px;color:var(--mut)}
+.filters{display:flex;gap:8px;padding:12px 18px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.f{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font:500 13.5px Inter;color:var(--mut);cursor:pointer;transition:.15s}
+.f:hover{border-color:var(--ink);color:var(--ink)}
+.f[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.list{list-style:none;padding:8px;max-height:340px;overflow:auto}
+.item{display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;padding:12px;border-radius:14px;cursor:pointer;transition:.12s}
+.item:hover,.item.on{background:#F1F0FF}
+.item .n{font:500 13px 'JetBrains Mono';color:var(--mut)}
+.item b{display:block;font-weight:600}
+.item small{color:var(--mut);font-size:13px}
+.meter{display:flex;align-items:center;gap:10px;font:500 13px 'JetBrains Mono';min-width:112px;justify-content:flex-end}
+.meter i{display:block;width:60px;height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.meter i u{display:block;height:100%;background:linear-gradient(90deg,var(--ind),var(--em));border-radius:9px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.empty{padding:36px;text-align:center;color:var(--mut)}
+.foot{display:flex;justify-content:space-between;gap:12px;padding:11px 18px;border-top:1.5px solid var(--ink);background:#F6F5FF;font-size:12.5px;color:var(--mut)}
+.hint{margin-top:16px;color:var(--mut);font-size:13px}
+/* marquee numbers */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:84px}
+.num{background:var(--card);border:1.5px solid var(--ink);border-radius:22px;padding:26px;transition:.2s}
+.num:hover{transform:translateY(-4px) rotate(-.8deg);box-shadow:6px 8px 0 var(--ink)}
+.num b{font-family:Syne;font-weight:800;font-size:70px;letter-spacing:-.05em;line-height:1;display:block}
+.num span{color:var(--mut)}
+.num:nth-child(2){background:var(--lime)}.num:nth-child(2) span{color:#3c4a00}
+section{padding:110px 0 0}
+h2{font-family:Syne;font-weight:800;font-size:clamp(32px,5vw,62px);line-height:1;letter-spacing:-.04em;max-width:760px}
+h2 em{font-style:normal;color:var(--ind)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.step{border-top:3px solid var(--ink);padding-top:18px}
+.step .mono{color:var(--ind);font-size:13px}
+.step h3{font-family:Syne;font-size:28px;margin:8px 0 6px;letter-spacing:-.02em}
+.step p{color:var(--mut)}
+.tray{margin-top:50px;background:var(--ink);color:#fff;border-radius:30px;padding:46px;display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.tray h2{color:#fff;font-size:clamp(30px,4vw,50px)}.tray h2 em{color:var(--lime)}
+.tray p{color:#B9B8E6;margin-top:12px}
+.bars{display:grid;gap:12px}
+.bar{display:grid;grid-template-columns:120px 1fr 40px;gap:12px;align-items:center;font-size:14px}
+.bar div{height:10px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:9px;background:var(--lime);transform-origin:left;animation:g 1.3s cubic-bezier(.2,.8,.2,1) both}
+.bar:nth-child(2) i{animation-delay:.1s}.bar:nth-child(3) i{animation-delay:.2s}.bar:nth-child(4) i{animation-delay:.3s}
+@keyframes g{from{transform:scaleX(0)}}
+.bar span:last-child{font-family:'JetBrains Mono';text-align:right;color:var(--lime)}
+.final{text-align:center;padding:120px 0 30px}
+.final h2{margin:0 auto 28px}
+footer{text-align:center;padding:24px 0 50px;color:var(--mut);font-size:13px}
+@media(max-width:860px){.nums,.steps{grid-template-columns:1fr}.tray{grid-template-columns:1fr;padding:28px}.item{grid-template-columns:28px 1fr}.meter{grid-column:2;justify-content:flex-start}kbd{display:none}.bar{grid-template-columns:100px 1fr 36px}}
+@media(prefers-reduced-motion:reduce){.bar i{animation:none}.meter i u,.num,.f,.item{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><i>◉</i>Chariow Radar</div>
+    <a class="btn" href="#">Connexion</a>
+  </nav>
+
+  <header class="hero">
+    <span class="kick">● Essaie, c'est interactif</span>
+    <h1>Cherche un produit. Vois <em>pourquoi il se vend.</em></h1>
+    <p class="lead">Le classement public des produits numériques Chariow, avec les méthodes de vente derrière chaque succès. Sans compte, gratuit.</p>
+
+    <div class="cmd" role="search">
+      <div class="cmd-top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#13123A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" placeholder="Cherche un produit ou une méthode… (ex : SEO, WhatsApp)" aria-label="Rechercher un produit ou une méthode" autocomplete="off">
+        <kbd>/</kbd>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Filtrer par catégorie">
+        <button class="f" aria-pressed="true" data-c="all">Tous</button>
+        <button class="f" aria-pressed="false" data-c="Formation">Formations</button>
+        <button class="f" aria-pressed="false" data-c="Ebook">Ebooks</button>
+        <button class="f" aria-pressed="false" data-c="Template">Templates</button>
+        <button class="f" aria-pressed="false" data-c="Coaching">Coaching</button>
+      </div>
+      <ul class="list" id="list" aria-live="polite"></ul>
+      <div class="foot"><span id="count" class="mono"></span><span>Exemples illustratifs</span></div>
+    </div>
+    <p class="hint mono">Astuce : appuie sur « / » pour chercher</p>
+  </header>
+
+  <div class="nums">
+    <div class="num"><b>128</b><span>produits repérés</span></div>
+    <div class="num"><b>12</b><span>méthodes de vente analysées</span></div>
+    <div class="num"><b>74%</b><span>trafic moyen attribué</span></div>
+  </div>
+
+  <section>
+    <h2>Trois étapes, <em>zéro friction.</em></h2>
+    <div class="steps">
+      <div class="step"><span class="mono">01</span><h3>Repère</h3><p>Ajoute un produit et les méthodes qui l'ont lancé.</p></div>
+      <div class="step"><span class="mono">02</span><h3>Compare</h3><p>Le classement public met en avant ce qui performe.</p></div>
+      <div class="step"><span class="mono">03</span><h3>Applique</h3><p>Inspire-toi des méthodes qui ramènent vraiment du trafic.</p></div>
+    </div>
+    <div class="tray">
+      <div>
+        <h2>Les méthodes <em>qui gagnent.</em></h2>
+        <p>Vois d'un coup d'œil quelles stratégies pèsent le plus sur le trafic.</p>
+      </div>
+      <div class="bars" aria-hidden="true">
+        <div class="bar"><span>Réseaux soc.</span><div><i style="width:92%"></i></div><span>92</span></div>
+        <div class="bar"><span>Affiliation</span><div><i style="width:74%"></i></div><span>74</span></div>
+        <div class="bar"><span>WhatsApp</span><div><i style="width:61%"></i></div><span>61</span></div>
+        <div class="bar"><span>Email</span><div><i style="width:44%"></i></div><span>44</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <h2>À toi de <em>jouer.</em></h2>
+    <a class="btn pri" href="#">Créer mon compte gratuit →</a>
+  </section>
+  <footer class="mono">Chariow Radar · maquette E</footer>
+</div>
+
+<script>
+const DATA=[
+ {n:"Formation SEO Pro",c:"Formation",s:87,m:["Réseaux sociaux","Affiliation"]},
+ {n:"Pack Canva Business",c:"Template",s:72,m:["WhatsApp","Influenceurs"]},
+ {n:"Ebook Cuisine Express",c:"Ebook",s:64,m:["Email","Publicité"]},
+ {n:"Template Notion Freelance",c:"Template",s:58,m:["SEO","Réseaux sociaux"]},
+ {n:"Coaching Vente WhatsApp",c:"Coaching",s:55,m:["WhatsApp","Lives"]},
+ {n:"Ebook Épargne Zéro Stress",c:"Ebook",s:49,m:["Email","Bouche-à-oreille"]},
+ {n:"Formation Montage Vidéo",c:"Formation",s:43,m:["Lives","Réseaux sociaux"]}
+];
+const $=s=>document.querySelector(s),list=$('#list'),q=$('#q');
+let cat='all',sel=0,shown=[];
+const norm=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+function render(){
+  const k=norm(q.value.trim());
+  shown=DATA.filter(d=>(cat==='all'||d.c===cat)&&(!k||norm(d.n+' '+d.m.join(' ')+' '+d.c).includes(k)));
+  sel=Math.min(sel,Math.max(shown.length-1,0));
+  list.innerHTML=shown.length?shown.map((d,i)=>`<li class="item${i===sel?' on':''}" data-i="${i}"><span class="n">${String(DATA.indexOf(d)+1).padStart(2,'0')}</span><div><b>${d.n}</b><small>${d.c} · ${d.m.join(' · ')}</small></div><div class="meter"><i><u style="width:${d.s}%"></u></i>${d.s}</div></li>`).join(''):'<li class="empty">Aucun produit ne correspond. Essaie « SEO » ou « WhatsApp ».</li>';
+  $('#count').textContent=shown.length+' résultat'+(shown.length>1?'s':'');
+}
+q.addEventListener('input',()=>{sel=0;render()});
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('.f');if(!b)return;
+  document.querySelectorAll('.f').forEach(x=>x.setAttribute('aria-pressed',x===b));cat=b.dataset.c;sel=0;render()});
+list.addEventListener('pointerover',e=>{const li=e.target.closest('.item');if(li){sel=+li.dataset.i;list.querySelectorAll('.item').forEach((x,i)=>x.classList.toggle('on',i===sel))}});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus()}
+  if(document.activeElement===q&&(e.key==='ArrowDown'||e.key==='ArrowUp')){e.preventDefault();
+    sel=Math.max(0,Math.min(shown.length-1,sel+(e.key==='ArrowDown'?1:-1)));render();
+    list.querySelector('.on')?.scrollIntoView({block:'nearest'})}
+});
+render();
+</script>
+</body>
+</html>

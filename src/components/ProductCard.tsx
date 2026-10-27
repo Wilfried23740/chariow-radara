@@ -13,22 +13,22 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
     product.traffic_score >= 70
       ? 'text-accent'
       : product.traffic_score >= 40
-        ? 'text-amber-700 dark:text-amber-400'
+        ? 'text-amber-600 dark:text-amber-400'
         : 'text-muted-foreground';
 
   const rankBadge =
     rank === 1
-      ? 'bg-amber-400 text-amber-950'
+      ? 'bg-primary text-primary-foreground shadow-[0_0_14px_rgb(var(--primary)/0.6)]'
       : rank === 2
-        ? 'bg-muted-foreground/25 text-foreground'
+        ? 'bg-brand text-background'
         : rank === 3
-          ? 'bg-orange-400 text-orange-950'
+          ? 'bg-amber-400 text-amber-950'
           : 'bg-muted text-muted-foreground';
 
   return (
     <button
       onClick={onClick}
-      className="group h-full w-full text-left bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all duration-200 hover:-translate-y-0.5"
+      className="group h-full w-full text-left bg-card rounded-[1.375rem] border border-border overflow-hidden hover:border-brand/60 hover:shadow-[0_12px_40px_-16px_rgb(var(--brand)/0.5)] transition-all duration-200 motion-safe:hover:-translate-y-0.5"
     >
       <div className="flex gap-4 p-4">
         <div className="relative shrink-0">
@@ -47,7 +47,7 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
             </div>
           )}
           <div
-            className={`absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full ${rankBadge} flex items-center justify-center text-xs font-bold shadow-sm`}
+            className={`absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full ${rankBadge} flex items-center justify-center font-mono text-xs font-bold`}
           >
             {rank}
           </div>
@@ -77,7 +77,7 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
             </span>
           </div>
 
-          <div className="flex items-center gap-3 mt-2.5 text-xs">
+          <div className="flex items-center gap-3 mt-2.5 text-xs font-mono">
             <span className={`flex items-center gap-1 font-medium ${trafficColor}`}>
               <TrendingUp className="w-3.5 h-3.5" />
               {product.traffic_score}/100
@@ -87,7 +87,7 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
               {product.sales_estimate.toLocaleString('fr-FR')}
             </span>
             {product.rating > 0 && (
-              <span className="flex items-center gap-1 text-amber-500">
+              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
                 <Star className="w-3.5 h-3.5 fill-amber-400" />
                 {product.rating.toFixed(1)}
               </span>
@@ -96,13 +96,13 @@ export function ProductCard({ product, rank, onClick }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="h-1.5 bg-muted">
+      <div className="h-1.5 bg-border">
         <div
           className={`h-full transition-all ${
             product.traffic_score >= 70
-              ? 'bg-accent'
+              ? 'bg-gradient-to-r from-brand to-accent'
               : product.traffic_score >= 40
-                ? 'bg-amber-500'
+                ? 'bg-amber-400'
                 : 'bg-muted-foreground/40'
           }`}
           style={{ width: `${product.traffic_score}%` }}

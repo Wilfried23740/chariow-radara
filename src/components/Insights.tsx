@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Loader2, TrendingUp, Award, BarChart3 } from 'lucide-react';
+import { Loader2, Award, BarChart3 } from 'lucide-react';
 import { api, errorMessage } from '@/lib/api';
 import type { ProductMethod, SalesMethod, MethodCategory } from '@/types';
 import { METHOD_CATEGORY_LABELS, METHOD_CATEGORY_COLORS } from '@/types';
@@ -90,14 +90,14 @@ export function Insights() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-2xl text-foreground">Analyses des méthodes de vente</h2>
+        <h2 className="font-display text-3xl text-foreground">Analyses des méthodes de vente</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Découvrez quelles stratégies marketing génèrent le plus de trafic sur les produits repérés.
         </p>
       </div>
 
       {loadError && (
-        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
+        <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
           {loadError}
         </div>
       )}
@@ -115,27 +115,33 @@ export function Insights() {
       ) : (
         <>
           {topMethod && (
-            <div className="bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-6 text-primary-foreground">
-              <div className="flex items-center gap-3 mb-2">
-                <Award className="w-5 h-5 text-amber-300 dark:text-amber-700" />
-                <span className="text-sm text-primary-foreground/85">Méthode la plus performante</span>
-              </div>
-              <h3 className="text-2xl font-bold">{topMethod.method.name}</h3>
-              <p className="text-sm text-primary-foreground/85 mt-1">
-                {topMethod.method.description}
-              </p>
-              <div className="flex gap-6 mt-4">
-                <div>
-                  <p className="text-3xl font-bold">{topMethod.totalContribution}</p>
-                  <p className="text-xs text-primary-foreground/85">Contribution totale au trafic</p>
+            <div className="relative overflow-hidden bg-card border border-border rounded-[1.375rem] p-6">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_100%_at_100%_0%,rgb(var(--brand)/0.25),transparent_70%)]"
+              />
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-2">
+                  <Award className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                  <span className="font-mono text-xs uppercase tracking-[0.12em] text-primary">Méthode la plus performante</span>
                 </div>
-                <div>
-                  <p className="text-3xl font-bold">{topMethod.productCount}</p>
-                  <p className="text-xs text-primary-foreground/85">Produits utilisant cette méthode</p>
-                </div>
-                <div>
-                  <p className="text-3xl font-bold">{topMethod.avgContribution}%</p>
-                  <p className="text-xs text-primary-foreground/85">Contribution moyenne</p>
+                <h3 className="font-display text-3xl text-foreground">{topMethod.method.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {topMethod.method.description}
+                </p>
+                <div className="flex flex-wrap gap-x-10 gap-y-4 mt-5">
+                  <div>
+                    <p className="font-mono text-3xl text-foreground">{topMethod.totalContribution}</p>
+                    <p className="text-xs text-muted-foreground">Contribution totale au trafic</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-3xl text-foreground">{topMethod.productCount}</p>
+                    <p className="text-xs text-muted-foreground">Produits utilisant cette méthode</p>
+                  </div>
+                  <div>
+                    <p className="font-mono text-3xl text-primary">{topMethod.avgContribution}%</p>
+                    <p className="text-xs text-muted-foreground">Contribution moyenne</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -172,7 +178,7 @@ export function Insights() {
                       <div className="flex items-center gap-2 mt-1.5">
                         <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-accent/70 to-accent rounded-full transition-all"
+                            className="h-full bg-gradient-to-r from-brand to-accent rounded-full transition-all"
                             style={{ width: `${widthPercent}%` }}
                           />
                         </div>
@@ -182,7 +188,7 @@ export function Insights() {
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-lg font-bold text-foreground">
+                      <p className="font-mono text-lg text-foreground">
                         {stat.totalContribution}
                       </p>
                       <p className="text-xs text-muted-foreground">points trafic</p>
@@ -209,7 +215,7 @@ export function Insights() {
                         {METHOD_CATEGORY_LABELS[cat.category]}
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-foreground">{cat.total}</p>
+                    <p className="font-mono text-2xl text-foreground">{cat.total}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       {cat.count} méthode{cat.count > 1 ? 's' : ''} · {cat.avg}% en moyenne
                     </p>

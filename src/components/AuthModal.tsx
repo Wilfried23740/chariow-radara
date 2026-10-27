@@ -1,14 +1,32 @@
-import { useState } from 'react';
-import { LogIn, UserPlus, Loader2 } from 'lucide-react';
+import { useId, useState } from 'react';
+import { LogIn, UserPlus } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 
-interface AuthFormProps {
+interface AuthModalProps {
+  open: boolean;
+  onClose: () => void;
   onDone: () => void;
-  onCancel: () => void;
   message?: string;
 }
 
-export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
+// Le formulaire est remonté à chaque ouverture : champs et erreurs repartent de zéro.
+export function AuthModal({ open, onClose, onDone, message }: AuthModalProps) {
+  if (!open) return null;
+  return <AuthDialog onClose={onClose} onDone={onDone} message={message} />;
+}
+
+function AuthDialog({
+  onClose,
+  onDone,
+  message,
+}: {
+  onClose: () => void;
+  onDone: () => void;
+  message?: string;
+}) {
+  const formId = useId();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -58,25 +76,36 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
     onDone();
   }
 
+  // 16 px sur mobile : évite le zoom automatique d'iOS au focus.
   const inputClass =
-    'w-full text-sm border border-input rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
+    'w-full min-h-11 text-base sm:text-sm border border-input rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent';
+  const labelClass = 'block text-xs font-medium text-muted-foreground mb-1.5';
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="mb-6">
-        <h2 className="font-display text-2xl text-foreground">
-          {mode === 'login' ? 'Connexion' : 'Créer un compte'}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {message ?? 'Connectez-vous pour repérer et gérer vos produits.'}
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-border p-6 space-y-4">
+    <Modal
+      open
+      onClose={onClose}
+      size="sm"
+      title={mode === 'login' ? 'Connexion' : 'Créer un compte'}
+      description={message ?? 'Connectez-vous pour repérer et gérer vos produits.'}
+      footer={
+        <>
+          <Button variant="ghost" onClick={onClose}>
+            Annuler
+          </Button>
+          <Button type="submit" form={formId} variant="primary" loading={loading}>
+            {!loading && (mode === 'login' ? <LogIn className="h-4 w-4" aria-hidden="true" /> : <UserPlus className="h-4 w-4" aria-hidden="true" />)}
+            {mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
+          </Button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} className="space-y-4 pb-2">
         {mode === 'signup' && (
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1.5">Nom</label>
+            <label htmlFor={`${formId}-name`} className={labelClass}>Nom</label>
             <input
+              id={`${formId}-name`}
               type="text"
               autoComplete="name"
               value={name}
@@ -86,8 +115,9 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           </div>
         )}
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Email</label>
+          <label htmlFor={`${formId}-email`} className={labelClass}>Email</label>
           <input
+            id={`${formId}-email`}
             type="email"
             autoComplete="email"
             value={email}
@@ -96,8 +126,9 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">Mot de passe</label>
+          <label htmlFor={`${formId}-password`} className={labelClass}>Mot de passe</label>
           <input
+            id={`${formId}-password`}
             type="password"
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             value={password}
@@ -107,34 +138,10 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
         </div>
 
         {error && (
-          <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
+          <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
             {error}
           </div>
         )}
-
-        <div className="flex gap-2 pt-1">
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
-          >
-            {loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : mode === 'login' ? (
-              <LogIn className="w-4 h-4" />
-            ) : (
-              <UserPlus className="w-4 h-4" />
-            )}
-            {mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-4 py-2.5 rounded-xl border border-border text-muted-foreground text-sm font-medium hover:bg-muted"
-          >
-            Annuler
-          </button>
-        </div>
 
         <button
           type="button"
@@ -142,11 +149,11 @@ export function AuthForm({ onDone, onCancel, message }: AuthFormProps) {
             setMode(mode === 'login' ? 'signup' : 'login');
             setError('');
           }}
-          className="text-xs text-muted-foreground hover:text-foreground underline"
+          className="min-h-11 text-sm text-muted-foreground hover:text-foreground underline underline-offset-4"
         >
           {mode === 'login' ? 'Pas encore de compte ? Inscrivez-vous' : 'Déjà un compte ? Connectez-vous'}
         </button>
       </form>
-    </div>
+    </Modal>
   );
 }

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette D — Aurore & Verre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0B1E;--text:#F2F1FF;--muted:#A9A8D0;--glass:rgba(255,255,255,.06);--edge:rgba(255,255,255,.14);--ind:#7B6CFF;--em:#34E3A8;--pink:#FF7AC6;--sky:#5CC8FF}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+.disp{font-family:'Bricolage Grotesque',sans-serif}
+/* aurora */
+.aurora{position:fixed;inset:-20%;z-index:0;filter:blur(70px) saturate(1.3);opacity:.85;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%;mix-blend-mode:screen;animation:drift 18s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:55vw;height:55vw;left:5%;top:0;background:var(--ind)}
+.aurora i:nth-child(2){width:45vw;height:45vw;right:0;top:15%;background:var(--em);animation-duration:23s;animation-delay:-6s;opacity:.7}
+.aurora i:nth-child(3){width:40vw;height:40vw;left:30%;top:45%;background:var(--pink);animation-duration:27s;animation-delay:-11s;opacity:.55}
+.aurora i:nth-child(4){width:35vw;height:35vw;right:20%;top:60%;background:var(--sky);animation-duration:21s;opacity:.5}
+@keyframes drift{to{transform:translate(8vw,-6vh) scale(1.2) rotate(40deg)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.06;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+nav{display:flex;justify-content:space-between;align-items:center;margin:18px auto 0;padding:10px 12px 10px 20px;max-width:760px;background:var(--glass);border:1px solid var(--edge);border-radius:999px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);position:sticky;top:14px;z-index:5}
+.logo{font-weight:800;font-size:17px;display:flex;gap:9px;align-items:center}
+.logo i{width:16px;height:16px;border-radius:50%;background:conic-gradient(var(--em),var(--ind),var(--pink),var(--em))}
+.links{display:flex;gap:22px;font-size:14px;color:var(--muted)}
+.links a{color:inherit;text-decoration:none}.links a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 24px;border-radius:999px;font-weight:600;text-decoration:none;color:#fff;border:1px solid var(--edge);background:var(--glass);transition:.2s;cursor:pointer;font-family:inherit;font-size:15px}
+.btn:hover{background:rgba(255,255,255,.14)}
+.btn.pri{background:#fff;color:#10102A;border-color:#fff;box-shadow:0 8px 40px rgba(123,108,255,.5)}
+.btn.pri:hover{transform:translateY(-2px);box-shadow:0 14px 50px rgba(52,227,168,.45)}
+nav .btn{min-height:40px;padding:0 18px}
+.hero{text-align:center;padding:110px 0 60px}
+.pill{display:inline-flex;gap:8px;align-items:center;font-size:13px;padding:7px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(10px)}
+.pill b{background:linear-gradient(90deg,var(--em),var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(46px,8.6vw,120px);line-height:.94;letter-spacing:-.045em;margin:26px auto;max-width:1000px}
+h1 span{background:linear-gradient(100deg,#fff 10%,var(--sky) 40%,var(--pink) 70%,var(--em));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 8s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.lead{max-width:600px;margin:0 auto;color:var(--muted);font-size:19px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+/* tilt stage */
+.stage{perspective:1400px;margin:70px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:center}
+.tilt{--rx:0deg;--ry:0deg;--mx:50%;--my:50%;position:relative;border-radius:26px;padding:24px;background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.04));border:1px solid var(--edge);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);text-align:left;transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;transition:transform .15s ease-out;overflow:hidden}
+.tilt::after{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--mx) var(--my),rgba(255,255,255,.22),transparent 60%);pointer-events:none;opacity:0;transition:opacity .25s}
+.tilt:hover::after{opacity:1}
+.tilt.mid{transform:rotateX(var(--rx)) rotateY(var(--ry)) translateY(-26px) scale(1.04);background:linear-gradient(160deg,rgba(123,108,255,.38),rgba(52,227,168,.14));border-color:rgba(255,255,255,.3)}
+.rk{font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;color:var(--em)}
+.tilt h3{font-family:'Bricolage Grotesque';font-size:24px;letter-spacing:-.02em;margin:10px 0 4px;transform:translateZ(30px)}
+.tilt p{color:var(--muted);font-size:14px}
+.score{font-family:'Bricolage Grotesque';font-weight:800;font-size:68px;letter-spacing:-.05em;line-height:1;margin:18px 0 12px;transform:translateZ(50px)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}.tags span{font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.1)}
+.note{font-size:12px;color:var(--muted);margin-top:22px;opacity:.8}
+/* logos / stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:90px}
+.stat{padding:30px;border-radius:24px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(14px)}
+.stat b{font-family:'Bricolage Grotesque';font-weight:800;font-size:64px;letter-spacing:-.04em;display:block;line-height:1}
+.stat span{color:var(--muted)}
+section{padding:110px 0 0}
+h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:clamp(34px,5vw,64px);line-height:1;letter-spacing:-.04em;max-width:760px}
+h2 span{color:var(--em)}
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:44px}
+.cell{position:relative;border-radius:26px;padding:28px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(14px);overflow:hidden;--mx:50%;--my:50%}
+.cell::before{content:"";position:absolute;inset:0;background:radial-gradient(320px circle at var(--mx) var(--my),rgba(123,108,255,.28),transparent 60%);opacity:0;transition:opacity .3s}
+.cell:hover::before{opacity:1}
+.cell>*{position:relative}
+.s4{grid-column:span 4}.s2{grid-column:span 2}.s3{grid-column:span 3}
+.cell h3{font-family:'Bricolage Grotesque';font-size:25px;letter-spacing:-.02em}
+.cell p{color:var(--muted);margin-top:8px;font-size:15px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:130px;margin-top:22px}
+.bars i{flex:1;border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--em),var(--ind));transform-origin:bottom;animation:up 1.4s cubic-bezier(.2,.8,.2,1) both}
+.bars i:nth-child(2){animation-delay:.1s}.bars i:nth-child(3){animation-delay:.2s}.bars i:nth-child(4){animation-delay:.3s}.bars i:nth-child(5){animation-delay:.4s}.bars i:nth-child(6){animation-delay:.5s}.bars i:nth-child(7){animation-delay:.6s}
+@keyframes up{from{transform:scaleY(0)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.chips span{padding:7px 14px;border-radius:999px;border:1px solid var(--edge);font-size:14px}
+.final{margin:120px 0 30px;text-align:center;padding:80px 20px;border-radius:36px;background:linear-gradient(135deg,rgba(123,108,255,.35),rgba(52,227,168,.18));border:1px solid var(--edge);backdrop-filter:blur(20px)}
+.final h2{margin:0 auto}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:24px 0 50px;position:relative;z-index:2}
+@media(max-width:860px){.links{display:none}.stage,.stats{grid-template-columns:1fr}.tilt.mid{transform:none}.s4,.s2,.s3{grid-column:span 6}.hero{padding-top:70px}}
+@media(prefers-reduced-motion:reduce){.aurora i,h1 span,.bars i{animation:none}.tilt{transition:none}}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="wrap">
+  <nav>
+    <div class="logo"><i></i>Chariow Radar</div>
+    <div class="links"><a href="#">Classement</a><a href="#">Analyses</a><a href="#">Repérer</a></div>
+    <a class="btn pri" href="#">Connexion</a>
+  </nav>
+
+  <header class="hero">
+    <span class="pill"><b>Nouveau</b> Le classement public des produits Chariow</span>
+    <h1>Le marché numérique, <span>enfin lisible.</span></h1>
+    <p class="lead">Découvrez quels produits se vendent et quelles méthodes leur amènent du trafic. Gratuit, ouvert à tous, sans compte pour explorer.</p>
+    <div class="cta">
+      <a class="btn pri" href="#">Explorer le classement →</a>
+      <a class="btn" href="#">Repérer un produit</a>
+    </div>
+
+    <div class="stage">
+      <article class="tilt" data-tilt>
+        <span class="rk">N°2</span><h3>Pack Canva Business</h3><p>Templates & identité visuelle</p>
+        <div class="score">72</div><div class="tags"><span>WhatsApp</span><span>Influence</span></div>
+      </article>
+      <article class="tilt mid" data-tilt>
+        <span class="rk">N°1 ★</span><h3>Formation SEO Pro</h3><p>Formation vidéo complète</p>
+        <div class="score">87</div><div class="tags"><span>Réseaux sociaux</span><span>Affiliation</span></div>
+      </article>
+      <article class="tilt" data-tilt>
+        <span class="rk">N°3</span><h3>Ebook Cuisine Express</h3><p>Guide pratique</p>
+        <div class="score">64</div><div class="tags"><span>Email</span><span>Publicité</span></div>
+      </article>
+    </div>
+    <p class="note">Exemples illustratifs · Survole les cartes</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b class="disp">128</b><span>produits repérés</span></div>
+    <div class="stat"><b class="disp">12</b><span>méthodes de vente analysées</span></div>
+    <div class="stat"><b class="disp">74%</b><span>trafic moyen attribué</span></div>
+  </div>
+
+  <section>
+    <h2>Tout ce qu'il faut pour <span>comprendre</span> ce qui marche.</h2>
+    <div class="bento">
+      <div class="cell s4" data-spot><h3>Les méthodes qui pèsent le plus</h3><p>Visualisez la contribution de chaque méthode au trafic.</p>
+        <div class="bars" aria-hidden="true"><i style="height:92%"></i><i style="height:74%"></i><i style="height:61%"></i><i style="height:48%"></i><i style="height:40%"></i><i style="height:28%"></i><i style="height:18%"></i></div></div>
+      <div class="cell s2" data-spot><h3>Chacun ses repérages</h3><p>Un compte gratuit : tu gères uniquement tes produits. Tout le monde consulte.</p></div>
+      <div class="cell s3" data-spot><h3>12 méthodes décodées</h3><div class="chips"><span>Réseaux sociaux</span><span>Affiliation</span><span>WhatsApp</span><span>Email</span><span>SEO</span><span>Lives</span></div></div>
+      <div class="cell s3" data-spot><h3>Mode clair & sombre</h3><p>Le site s'adapte à ton appareil, sur ordinateur comme sur téléphone.</p></div>
+    </div>
+  </section>
+
+  <div class="final">
+    <h2>Prêt à repérer le prochain best-seller ?</h2>
+    <div class="cta"><a class="btn pri" href="#">Créer mon compte gratuit →</a></div>
+  </div>
+</div>
+<footer>Chariow Radar · maquette D</footer>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-tilt]').forEach(el=>{
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    el.style.setProperty('--mx',x*100+'%');el.style.setProperty('--my',y*100+'%');
+    if(!reduce){el.style.setProperty('--ry',(x-.5)*16+'deg');el.style.setProperty('--rx',(.5-y)*16+'deg');}
+  });
+  el.addEventListener('pointerleave',()=>{el.style.setProperty('--rx','0deg');el.style.setProperty('--ry','0deg');});
+});
+document.querySelectorAll('[data-spot]').forEach(el=>{
+  el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();
+    el.style.setProperty('--mx',(e.clientX-r.left)+'px');el.style.setProperty('--my',(e.clientY-r.top)+'px');});
+});
+</script>
+</body>
+</html>

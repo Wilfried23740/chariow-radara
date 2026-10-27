@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette A — Radar Nocturne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080F;--panel:#0E1020;--line:#222645;--text:#EDEEFF;--muted:#9A9CC4;--ind:#7C6CFF;--em:#2EF2A6;--amber:#FFC24B}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;overflow-x:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(60% 50% at 75% 20%,rgba(124,108,255,.22),transparent 70%),radial-gradient(40% 40% at 10% 80%,rgba(46,242,166,.10),transparent 70%);pointer-events:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{display:flex;gap:10px;align-items:center;font-weight:700;font-size:18px}
+.logo i{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 14px var(--em)}
+nav a.btn{font-size:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;font-weight:500;text-decoration:none;color:var(--text);border:1px solid var(--line);transition:.2s}
+.btn:hover{border-color:var(--ind)}
+.btn.primary{background:var(--em);color:#04150E;border-color:var(--em);font-weight:700;box-shadow:0 0 32px rgba(46,242,166,.35)}
+.btn.primary:hover{box-shadow:0 0 48px rgba(46,242,166,.55);transform:translateY(-1px)}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding:40px 0 80px}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--em);border:1px solid rgba(46,242,166,.35);padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(42px,6.4vw,84px);line-height:.98;letter-spacing:-.035em;margin:22px 0}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--ind),var(--em));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--muted);font-size:18px;max-width:520px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+/* radar */
+.radar{position:relative;aspect-ratio:1;width:100%;max-width:560px;margin:0 auto}
+.ring{position:absolute;border:1px solid var(--line);border-radius:50%;inset:0}
+.r2{inset:16%}.r3{inset:32%}.r4{inset:48%}
+.cross::before,.cross::after{content:"";position:absolute;background:var(--line)}
+.cross::before{left:50%;top:0;bottom:0;width:1px}.cross::after{top:50%;left:0;right:0;height:1px}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(46,242,166,.55),rgba(46,242,166,0) 28%,transparent 28%);animation:spin 5s linear infinite;mask:radial-gradient(circle,#000 0 70%,transparent 71%);-webkit-mask:radial-gradient(circle,#000,#000)}
+.disc{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(124,108,255,.12),transparent 70%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.blip{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 0 0 rgba(46,242,166,.7);animation:ping 2.6s infinite}
+.blip.i{background:var(--ind);animation-name:pingi}
+.blip.a{background:var(--amber)}
+@keyframes ping{70%{box-shadow:0 0 0 16px rgba(46,242,166,0)}100%{box-shadow:0 0 0 0 rgba(46,242,166,0)}}
+@keyframes pingi{70%{box-shadow:0 0 0 16px rgba(124,108,255,0)}100%{box-shadow:0 0 0 0 rgba(124,108,255,0)}}
+.lab{position:absolute;font-size:11px;background:rgba(14,16,32,.92);border:1px solid var(--line);padding:4px 9px;border-radius:8px;white-space:nowrap;transform:translate(16px,-50%)}
+.lab b{color:var(--em);font-weight:500}
+.center{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#fff}
+/* strip */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:20px;background:rgba(14,16,32,.6);backdrop-filter:blur(6px)}
+.strip div{padding:26px;border-right:1px solid var(--line)}.strip div:last-child{border:0}
+.strip b{font-size:44px;letter-spacing:-.03em;display:block;line-height:1}
+.strip span{color:var(--muted);font-size:14px}
+section{padding:90px 0 0}
+h2{font-size:clamp(30px,4vw,52px);letter-spacing:-.03em;line-height:1.05;max-width:720px}
+.sub{color:var(--muted);margin-top:12px;max-width:560px}
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:40px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px;position:relative;overflow:hidden;transition:.25s}
+.card:hover{border-color:rgba(124,108,255,.6);transform:translateY(-3px)}
+.c1{grid-column:span 4}.c2{grid-column:span 2}.c3{grid-column:span 2}.c4{grid-column:span 4}
+.card h3{font-size:22px;letter-spacing:-.02em}
+.card p{color:var(--muted);font-size:15px;margin-top:8px}
+.rank{margin-top:20px;display:grid;gap:10px}
+.row{display:grid;grid-template-columns:28px 1fr 120px 46px;gap:12px;align-items:center;font-size:14px}
+.row .bar{height:6px;border-radius:9px;background:var(--line);overflow:hidden}
+.row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ind),var(--em));border-radius:9px}
+.row .n{color:var(--muted)}.row .v{text-align:right;color:var(--em)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chips span{font-size:13px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--muted)}
+.big{font-size:84px;letter-spacing:-.05em;line-height:1;background:linear-gradient(180deg,#fff,var(--ind));-webkit-background-clip:text;background-clip:text;color:transparent}
+.final{margin:100px 0 40px;text-align:center;padding:70px 20px;border:1px solid var(--line);border-radius:32px;background:radial-gradient(60% 100% at 50% 0,rgba(124,108,255,.28),transparent 70%),var(--panel)}
+.final h2{margin:0 auto}
+.final .cta{justify-content:center}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 50px}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.strip{grid-template-columns:1fr}.strip div{border-right:0;border-bottom:1px solid var(--line)}.c1,.c2,.c3,.c4{grid-column:span 6}.lab{display:none}.row{grid-template-columns:24px 1fr 46px}.row .bar{display:none}}
+@media(prefers-reduced-motion:reduce){.sweep,.blip{animation:none}.card,.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="logo"><i></i>Chariow Radar</div>
+    <a class="btn" href="#">Connexion</a>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="tag mono">● Signal détecté · en direct</span>
+      <h1>Voyez ce qui <em>se vend</em> avant les autres.</h1>
+      <p class="lead">Chariow Radar classe les produits numériques et révèle les méthodes de vente qui font vraiment venir le trafic. Public, gratuit, sans compte pour explorer.</p>
+      <div class="cta">
+        <a class="btn primary" href="#">Explorer le classement →</a>
+        <a class="btn" href="#">Repérer un produit</a>
+      </div>
+    </div>
+
+    <div class="radar" role="img" aria-label="Illustration : radar détectant des produits">
+      <div class="disc"></div>
+      <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div><div class="ring r4"></div>
+      <div class="ring cross" style="border:0"></div>
+      <div class="sweep"></div>
+      <div class="center"></div>
+      <span class="blip" style="left:68%;top:24%"></span><span class="lab mono" style="left:68%;top:24%">Formation SEO · <b>87</b></span>
+      <span class="blip i" style="left:26%;top:34%;animation-delay:.6s"></span><span class="lab mono" style="left:26%;top:34%">Pack Canva · <b>72</b></span>
+      <span class="blip a" style="left:74%;top:66%;animation-delay:1.2s"></span><span class="lab mono" style="left:74%;top:66%">Ebook Cuisine · <b>64</b></span>
+      <span class="blip" style="left:36%;top:76%;animation-delay:1.8s"></span><span class="lab mono" style="left:36%;top:76%">Template Notion · <b>58</b></span>
+    </div>
+  </header>
+
+  <div class="strip">
+    <div><b>128</b><span>produits repérés</span></div>
+    <div><b>12</b><span>méthodes de vente analysées</span></div>
+    <div><b>74%</b><span>trafic moyen attribué</span></div>
+  </div>
+
+  <section>
+    <h2>Un tableau de bord qui répond à une seule question : <em style="font-style:normal;color:var(--em)">pourquoi ça marche ?</em></h2>
+    <p class="sub">Exemples illustratifs. Les vraies données apparaissent dès que des produits sont repérés.</p>
+    <div class="bento">
+      <div class="card c1">
+        <h3>Le classement vivant</h3>
+        <p>Les produits triés par potentiel, mis à jour à chaque repérage.</p>
+        <div class="rank">
+          <div class="row"><span class="mono n">01</span><span>Formation SEO Pro</span><div class="bar"><i style="width:87%"></i></div><span class="mono v">87</span></div>
+          <div class="row"><span class="mono n">02</span><span>Pack Canva Business</span><div class="bar"><i style="width:72%"></i></div><span class="mono v">72</span></div>
+          <div class="row"><span class="mono n">03</span><span>Ebook Cuisine Express</span><div class="bar"><i style="width:64%"></i></div><span class="mono v">64</span></div>
+        </div>
+      </div>
+      <div class="card c2"><div class="big mono">12</div><h3 style="margin-top:10px">méthodes décodées</h3><p>Lives, affiliation, WhatsApp, influence…</p></div>
+      <div class="card c3"><h3>Chacun ses repérages</h3><p>Compte gratuit : tu ne modifies que tes propres produits. Tout le monde peut consulter.</p></div>
+      <div class="card c4">
+        <h3>Les méthodes qui ramènent du trafic</h3>
+        <div class="chips"><span>Réseaux sociaux</span><span>Affiliation</span><span>WhatsApp</span><span>Email</span><span>Publicité</span><span>Influenceurs</span><span>SEO</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="final">
+    <h2>Ton prochain produit gagnant est déjà sur le radar.</h2>
+    <div class="cta"><a class="btn primary" href="#">Commencer gratuitement →</a></div>
+  </div>
+  <footer class="mono">Chariow Radar · maquette A</footer>
+</div>
+</body>
+</html>

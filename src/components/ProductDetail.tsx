@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Loader2,
   Save,
-  X,
 } from 'lucide-react';
 import { api, errorMessage } from '@/lib/api';
 import type {
@@ -27,6 +26,8 @@ import {
 } from '@/types';
 import { getMethodIcon } from '@/lib/methodIcons';
 import { useAuth } from '@/lib/auth';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 
 interface ProductDetailProps {
   product: Product;
@@ -41,6 +42,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
   const [allMethods, setAllMethods] = useState<SalesMethod[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [showAddMethod, setShowAddMethod] = useState(false);
   const [selectedMethodId, setSelectedMethodId] = useState('');
   const [contribution, setContribution] = useState(50);
@@ -154,14 +156,14 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1.5 min-h-11 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Retour au classement
       </button>
 
       {error && (
-        <div className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
+        <div role="alert" className="text-sm text-destructive bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2">
           {error}
         </div>
       )}
@@ -183,8 +185,25 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
           </div>
 
           <div className="flex-1 min-w-0">
-            {editing ? (
-              <div className="space-y-3">
+            <>
+              <Modal
+                open={editing}
+                onClose={() => setEditing(false)}
+                title="Modifier le produit"
+                size="lg"
+                footer={
+                  <>
+                    <Button variant="ghost" onClick={() => setEditing(false)}>
+                      Annuler
+                    </Button>
+                    <Button variant="primary" onClick={handleSaveEdit}>
+                      <Save className="h-4 w-4" aria-hidden="true" />
+                      Enregistrer
+                    </Button>
+                  </>
+                }
+              >
+              <div className="space-y-3 pb-2">
                 <input
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
@@ -202,7 +221,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                   className="w-full text-sm text-muted-foreground border border-input rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="Description du produit"
                 />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <label className="text-xs text-muted-foreground">
                     Catégorie
                     <select
@@ -275,43 +294,47 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                     />
                   </label>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleSaveEdit}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90"
-                  >
-                    <Save className="w-4 h-4" />
-                    Enregistrer
-                  </button>
-                  <button
-                    onClick={() => setEditing(false)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-muted-foreground text-sm font-medium hover:bg-muted"
-                  >
-                    <X className="w-4 h-4" />
-                    Annuler
-                  </button>
-                </div>
               </div>
-            ) : (
-              <>
+              </Modal>
+
+              <Modal
+                open={confirmingDelete}
+                onClose={() => setConfirmingDelete(false)}
+                title="Supprimer ce produit ?"
+                description="Cette action est définitive : le produit et ses méthodes associées seront supprimés."
+                size="sm"
+                footer={
+                  <>
+                    <Button variant="ghost" onClick={() => setConfirmingDelete(false)}>
+                      Annuler
+                    </Button>
+                    <Button variant="danger" onClick={handleDelete}>
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      Oui, supprimer
+                    </Button>
+                  </>
+                }
+              >
+                <p className="pb-2 text-sm text-foreground">« {product.title} »</p>
+              </Modal>
+
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-xl text-foreground">{product.title}</h2>
+                    <h2 className="font-display text-2xl text-foreground">{product.title}</h2>
                     <p className="text-sm text-muted-foreground mt-0.5">par {product.creator}</p>
                   </div>
                   {isOwner && (
-                    <div className="flex gap-1.5">
-                      <button
-                        onClick={() => setEditing(true)}
-                        className="px-3 py-1.5 rounded-lg border border-border text-muted-foreground text-xs font-medium hover:bg-muted"
-                      >
+                    <div className="flex shrink-0 gap-2">
+                      <Button size="sm" onClick={() => setEditing(true)}>
                         Modifier
-                      </button>
+                      </Button>
                       <button
-                        onClick={handleDelete}
-                        className="p-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10"
+                        onClick={() => setConfirmingDelete(true)}
+                        aria-label="Supprimer le produit"
+                        title="Supprimer le produit"
+                        className="inline-flex min-h-11 min-w-11 sm:min-h-9 sm:min-w-9 items-center justify-center rounded-full border border-destructive/30 text-destructive hover:bg-destructive/10"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
                   )}
@@ -357,7 +380,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                     {product.sales_estimate.toLocaleString('fr-FR')} ventes
                   </span>
                   {product.rating > 0 && (
-                    <span className="flex items-center gap-1.5 text-amber-500">
+                    <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
                       <Star className="w-4 h-4 fill-amber-400" />
                       {product.rating.toFixed(1)}
                     </span>
@@ -376,8 +399,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                     ))}
                   </div>
                 )}
-              </>
-            )}
+            </>
           </div>
         </div>
 
@@ -400,8 +422,8 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
           {showAddMethod && (
             <div className="mb-4 p-4 rounded-xl border border-border bg-background space-y-3">
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Méthode de vente</label>
-                <select
+                <label htmlFor="pd-1" className="text-xs text-muted-foreground mb-1 block">Méthode de vente</label>
+                <select id="pd-1"
                   value={selectedMethodId}
                   onChange={(e) => setSelectedMethodId(e.target.value)}
                   className="w-full text-sm border border-input rounded-lg px-3 py-2 bg-card focus:outline-none focus:ring-2 focus:ring-ring"
@@ -415,10 +437,10 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                 </select>
               </div>
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">
+                <label htmlFor="pd-2" className="text-xs text-muted-foreground mb-1 block">
                   Contribution au trafic : {contribution}%
                 </label>
-                <input
+                <input id="pd-2"
                   type="range"
                   min="0"
                   max="100"
@@ -437,7 +459,7 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                 <button
                   onClick={handleAddMethod}
                   disabled={!selectedMethodId}
-                  className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-40"
+                  className="px-4 min-h-10 rounded-full bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 disabled:opacity-40"
                 >
                   Ajouter
                 </button>
@@ -504,7 +526,9 @@ export function ProductDetail({ product, onBack, onDelete }: ProductDetailProps)
                       {isOwner && (
                         <button
                           onClick={() => handleRemoveMethod(pm.id)}
-                          className="p-1.5 rounded-lg text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label={`Retirer la méthode ${method.name}`}
+                          title="Retirer la méthode"
+                          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 transition-opacity"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

@@ -4,52 +4,88 @@
 
 /*
  * Design tokens : couleurs sémantiques (canaux RGB, pour gérer l'opacité avec Tailwind).
- * Piste « moderne » : indigo + émeraude sur fond lavande, avec mode sombre automatique.
+ * Direction « Radar nocturne » : fond bleu nuit, signal émeraude, accent indigo.
+ * Deux thèmes : clair (par défaut dans :root) et sombre (classe `dark` sur <html>).
+ * La classe est posée avant l'affichage par le script de index.html (préférence de
+ * l'appareil, ou choix enregistré via le bouton de l'en-tête).
  * Les composants utilisent uniquement ces noms (bg-card, text-muted-foreground…),
  * jamais de couleurs en dur.
  */
 @layer base {
   :root {
     color-scheme: light;
-    --background: 245 243 255; /* #F5F3FF */
-    --foreground: 30 27 75; /* #1E1B4B */
+    --background: 244 244 252; /* #F4F4FC */
+    --foreground: 19 18 58; /* #13123A */
     --card: 255 255 255;
-    --muted: 237 233 254; /* #EDE9FE */
-    --muted-foreground: 91 91 123; /* #5B5B7B, 6.4:1 sur blanc */
-    --border: 224 228 250;
-    --input: 139 143 181; /* contour des champs, 3:1 minimum */
-    --primary: 79 70 229; /* #4F46E5, texte blanc 6.3:1 */
+    --muted: 236 236 249; /* #ECECF9 */
+    --muted-foreground: 85 88 130; /* #555882, 7:1 sur blanc */
+    --border: 218 220 240; /* #DADCF0 */
+    --input: 138 142 184; /* contour des champs, 3:1 minimum */
+    --primary: 4 120 87; /* #047857, émeraude, texte blanc 5.5:1 */
     --primary-foreground: 255 255 255;
-    --secondary: 129 140 248; /* #818CF8 */
-    --accent: 4 120 87; /* #047857, émeraude pour les données positives */
+    --brand: 79 70 229; /* #4F46E5, indigo, 6.3:1 sur blanc */
+    --secondary: 79 70 229;
+    --accent: 4 120 87;
     --accent-foreground: 255 255 255;
     --destructive: 220 38 38; /* #DC2626 */
     --ring: 79 70 229;
     --radius: 0.75rem;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      color-scheme: dark;
-      --background: 15 14 31; /* #0F0E1F */
-      --foreground: 232 231 255; /* #E8E7FF */
-      --card: 24 23 46; /* #18172E */
-      --muted: 36 34 66; /* #242242 */
-      --muted-foreground: 165 163 199; /* #A5A3C7 */
-      --border: 52 50 90; /* #34325A */
-      --input: 105 103 150;
-      --primary: 129 140 248; /* #818CF8 */
-      --primary-foreground: 15 14 31;
-      --secondary: 99 102 241;
-      --accent: 52 211 153; /* #34D399 */
-      --accent-foreground: 15 14 31;
-      --destructive: 248 113 113; /* #F87171 */
-      --ring: 129 140 248;
-    }
+  .dark {
+    color-scheme: dark;
+    --background: 7 8 15; /* #07080F */
+    --foreground: 237 238 255; /* #EDEEFF */
+    --card: 14 16 32; /* #0E1020 */
+    --muted: 24 27 52; /* #181B34 */
+    --muted-foreground: 154 156 196; /* #9A9CC4, 6.8:1 sur card */
+    --border: 34 38 69; /* #222645 */
+    --input: 98 104 160; /* contour des champs, 3:1 minimum */
+    --primary: 46 242 166; /* #2EF2A6, signal émeraude, texte sombre 13:1 */
+    --primary-foreground: 4 21 14;
+    --brand: 124 108 255; /* #7C6CFF, indigo, 4.9:1 sur card */
+    --secondary: 124 108 255;
+    --accent: 46 242 166;
+    --accent-foreground: 4 21 14;
+    --destructive: 255 107 122; /* #FF6B7A */
+    --ring: 46 242 166;
   }
 
   body {
     @apply bg-background font-sans text-foreground antialiased;
+    line-height: 1.5;
+  }
+
+  /* Halo de couleur fixe derrière toute l'application. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 75% 0%, rgb(var(--brand) / 0.2), transparent 70%),
+      radial-gradient(40% 40% at 5% 85%, rgb(var(--primary) / 0.09), transparent 70%);
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Champs de formulaire cohérents avec le thème. */
+  input,
+  select,
+  textarea {
+    @apply bg-card text-foreground;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted-foreground/70;
+  }
+
+  ::selection {
+    background: rgb(var(--primary) / 0.3);
   }
 
   /* Anneau de focus visible pour la navigation au clavier. */
@@ -68,5 +104,47 @@
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
     }
+  }
+}
+
+/* 16 px minimum sur mobile : évite le zoom automatique d'iOS quand on touche un champ. */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@layer components {
+  /* Balayage du radar : un secteur dégradé qui tourne. */
+  .radar-sweep {
+    background: conic-gradient(
+      from 0deg,
+      rgb(var(--primary) / 0.5),
+      rgb(var(--primary) / 0) 28%,
+      transparent 28%
+    );
+  }
+
+  /* Signal du radar : un point qui émet une onde (couleur = currentColor). */
+  .blip {
+    box-shadow: 0 0 0 0 currentColor;
+    animation: blip 2.6s infinite;
+  }
+  @keyframes blip {
+    70% {
+      box-shadow: 0 0 0 16px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-weight: 700;
+    letter-spacing: -0.03em;
   }
 }
